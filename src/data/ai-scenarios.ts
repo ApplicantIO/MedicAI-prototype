@@ -141,7 +141,7 @@ export const AI_SCENARIOS: AIScenario[] = [
     steps: [
       { id: 'ch1', aiMessage: 'Koʻkrak ogʻrigʻi va nafas qisilishi bormi?', kind: 'chips', chips: ['Ha, ikkalasi', 'Faqat ogʻriq', 'Faqat nafas qisilishi'] },
       { id: 'ch2', aiMessage: 'Ogʻirlik (1–10)?', kind: 'slider', sliderLabel: 'Ogʻirlik' },
-      { id: 'ch3', aiMessage: 'Ogʻriq qayerga tarqaladi?', kind: 'chips', chips: ['Chap qo'l', 'Orqa', 'Tarqalmaydi'] },
+      { id: 'ch3', aiMessage: 'Ogʻriq qayerga tarqaladi?', kind: 'chips', chips: ['Chap qoʻl', 'Orqa', 'Tarqalmaydi'] },
     ],
     result: result(
       ['Yurak-qon tomir yoki nafas yoʻllari muammosi ehtimoli — shoshilinch baholash kerak'],
