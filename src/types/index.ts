@@ -1,5 +1,5 @@
 export type ThemeMode = 'light' | 'dark' | 'system'
-export type ProRole = 'pharmacy' | 'clinic' | 'doctor'
+export type ProRole = 'pharmacy' | 'clinic' | 'hospital' | 'doctor'
 export type OrderStatus = 'accepted' | 'preparing' | 'ready' | 'delivered'
 export type AppointmentStatus = 'pending' | 'confirmed' | 'rejected' | 'completed' | 'cancelled'
 export type UrgencyLevel = 'low' | 'medium' | 'high'
@@ -149,6 +149,13 @@ export interface MessageThread {
   title: string
   role: ProRole
   messages: ChatMessage[]
+}
+
+export interface HospitalBed {
+  id: string
+  ward: string
+  status: 'available' | 'occupied' | 'cleaning'
+  patientName?: string
 }
 
 export interface MapPin {

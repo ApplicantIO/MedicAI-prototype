@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ChevronUp, Settings2 } from 'lucide-react'
 import { useMedicStore } from '@/store/medic-store'
 import { uz } from '@/content/uz'
@@ -11,6 +11,9 @@ import type { ProRole } from '@/types'
 export function DemoPanel() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
+  const isWelcome = location.pathname === '/app/welcome'
+  const isProPanel = location.pathname.startsWith('/pro/panel')
   const resetDemo = useMedicStore((s) => s.resetDemo)
   const accelerator = useMedicStore((s) => s.demoAccelerator)
   const setDemoAccelerator = useMedicStore((s) => s.setDemoAccelerator)
@@ -31,8 +34,16 @@ export function DemoPanel() {
     setOpen(false)
   }
 
+  if (isProPanel) return null
+
   return (
-    <div className="fixed bottom-3 right-3 z-50 flex flex-col items-end gap-2">
+    <div
+      className={`fixed z-50 flex gap-2 ${
+        isWelcome
+          ? 'left-3 top-3 flex-col-reverse items-start md:bottom-3 md:left-auto md:right-3 md:top-auto md:flex-col md:items-end'
+          : 'bottom-[calc(3.5rem_+_max(12px,_env(safe-area-inset-bottom))_+_4px)] right-3 flex-col items-end md:bottom-3'
+      }`}
+    >
       {open && (
         <div className="w-72 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-3 shadow-[var(--shadow-elevated)] animate-fade-in">
           <div className="mb-2 flex items-center justify-between">
@@ -59,15 +70,18 @@ export function DemoPanel() {
                 setProLoggedIn(true)
                 const path =
                   r === 'pharmacy'
-                    ? '/pro/panel/pharmacy/orders'
+                    ? '/pro/panel/pharmacy'
                     : r === 'clinic'
-                      ? '/pro/panel/clinic/appointments'
-                      : '/pro/panel/doctor/schedule'
+                      ? '/pro/panel/clinic'
+                      : r === 'hospital'
+                        ? '/pro/panel/hospital'
+                        : '/pro/panel/doctor'
                 navigate(path)
               }}
             >
               <option value="pharmacy">{uz.pro.rolePharmacy}</option>
               <option value="clinic">{uz.pro.roleClinic}</option>
+              <option value="hospital">{uz.pro.roleHospital}</option>
               <option value="doctor">{uz.pro.roleDoctor}</option>
             </select>
           </div>

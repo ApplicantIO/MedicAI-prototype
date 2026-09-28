@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Star } from 'lucide-react'
 import { clinicsSeed } from '@/data/clinics'
 import { uz } from '@/content/uz'
 import { Button } from '@/components/ui/button'
@@ -17,7 +18,7 @@ export function ClinicsPage() {
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={`rounded-full border px-3 py-1 text-xs ${
+            className={`min-h-11 rounded-full border px-3 text-xs ${
               filter === f ? 'border-[var(--fg)]' : 'border-[var(--border)]'
             }`}
           >
@@ -30,7 +31,11 @@ export function ClinicsPage() {
           <div key={c.id} className="rounded-[var(--radius-card)] border border-[var(--border)] p-4">
             <div className="font-medium">{c.name}</div>
             <div className="mt-1 text-xs text-[var(--muted)]">
-              {c.type === 'clinic' ? 'Klinika' : 'Shifoxona'} · ★ {c.rating} · {c.distanceKm} km
+              {c.type === 'clinic' ? uz.clinics.filterClinic : uz.clinics.filterHospital} ·{' '}
+              <span className="inline-flex items-center gap-1">
+                <Star size={12} strokeWidth={1.5} className="fill-current" /> {c.rating}
+              </span>{' '}
+              · {c.distanceKm} km
             </div>
             <p className="mt-2 text-sm text-[var(--muted)]">{c.address}</p>
             <div className="mt-2 flex flex-wrap gap-1">
@@ -41,7 +46,7 @@ export function ClinicsPage() {
               ))}
             </div>
             {c.doctorIds[0] && (
-              <Button size="sm" className="mt-3" asChild>
+              <Button className="mt-3 min-h-11 w-full" asChild>
                 <Link to={`/app/book/${c.doctorIds[0]}`}>{uz.clinics.book}</Link>
               </Button>
             )}

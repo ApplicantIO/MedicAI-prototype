@@ -12,6 +12,7 @@ export const uz = {
       app: 'Foydalanuvchi ilovasi',
       pharmacy: 'Dorixona paneli',
       clinic: 'Klinika paneli',
+      hospital: 'Shifoxona paneli',
       doctor: 'Shifokor paneli',
     },
     splitDemo: 'Split-view demo',
@@ -71,6 +72,7 @@ export const uz = {
   doctors: {
     title: 'Shifokorlar',
     search: 'Qidiruv…',
+    empty: 'Mos shifokor topilmadi.',
     sortRating: 'Reyting',
     sortPrice: 'Narx',
     sortDistance: 'Yaqinlik',
@@ -176,6 +178,7 @@ export const uz = {
     demoLogin: 'Demo bilan kirish',
     rolePharmacy: 'Dorixona',
     roleClinic: 'Klinika',
+    roleHospital: 'Shifoxona',
     roleDoctor: 'Shifokor',
     desktopHint: 'Panelni kompyuterda ochish tavsiya etiladi (1024px+).',
     search: 'Qidiruv…',

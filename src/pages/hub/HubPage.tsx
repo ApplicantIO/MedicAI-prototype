@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
-import { Moon, Sun, Smartphone, Building2, Stethoscope, Pill } from 'lucide-react'
+import { Moon, Sun, Smartphone, Building2, Stethoscope, Pill, Hospital } from 'lucide-react'
 import { uz } from '@/content/uz'
 import { useMedicStore } from '@/store/medic-store'
 import { Button } from '@/components/ui/button'
@@ -22,6 +22,13 @@ const cards = [
     icon: Building2,
     desc: 'Klinika',
     role: 'clinic' as const,
+  },
+  {
+    to: '/pro',
+    label: uz.hub.cards.hospital,
+    icon: Hospital,
+    desc: 'Shifoxona',
+    role: 'hospital' as const,
   },
   {
     to: '/pro',
@@ -60,7 +67,7 @@ export function HubPage() {
           </Button>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-12 gap-3">
           {cards.map((c) => (
             <Link
               key={c.label}
@@ -68,7 +75,7 @@ export function HubPage() {
               onClick={() => {
                 if (c.role) setProRole(c.role)
               }}
-              className="group flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-4 transition-colors hover:border-[var(--fg)]"
+              className="group col-span-12 flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-4 transition-colors hover:border-[var(--fg)] sm:col-span-6"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-input)] bg-[var(--surface)] text-[var(--fg)]">
                 <c.icon size={22} strokeWidth={1.5} />

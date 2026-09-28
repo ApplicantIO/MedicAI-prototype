@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { Star } from 'lucide-react'
 import { doctorsSeed } from '@/data/doctors'
 import { clinicsSeed } from '@/data/clinics'
 import { reviewsSeed } from '@/data/reviews'
@@ -12,11 +13,13 @@ export function DoctorProfilePage() {
   const { id } = useParams()
   const doctor = doctorsSeed.find((d) => d.id === id)
   const toggleSaved = useMedicStore((s) => s.toggleSavedDoctor)
+  const slotMinutes = useMedicStore((s) => s.doctorScheduleSlotMinutes)
+  const breakEnabled = useMedicStore((s) => s.doctorBreakEnabled)
   const saved = useMedicStore((s) => s.savedDoctorIds.includes(id ?? ''))
   if (!doctor) return <div className="p-4">Topilmadi</div>
   const clinic = clinicsSeed.find((c) => c.id === doctor.clinicId)
   const reviews = reviewsSeed.filter((r) => r.doctorId === doctor.id).slice(0, 3)
-  const slots = getDaySlots(doctor.id, new Date().toISOString().slice(0, 10)).filter((s) => s.available).slice(0, 4)
+  const slots = getDaySlots(doctor.id, new Date().toISOString().slice(0, 10), slotMinutes, breakEnabled).filter((s) => s.available).slice(0, 4)
 
   return (
     <div className="px-4 pb-8 pt-4">
@@ -32,8 +35,8 @@ export function DoctorProfilePage() {
           <p className="text-sm text-[var(--muted)]">
             {doctor.specialty} · {doctor.experienceYears} {uz.doctors.experience}
           </p>
-          <p className="mt-1 text-sm">
-            ★ {doctor.rating} ({doctor.reviewCount}) · {doctor.distanceKm} km
+          <p className="mt-1 inline-flex items-center gap-1 text-sm">
+            <Star size={14} strokeWidth={1.5} className="fill-current" /> {doctor.rating} ({doctor.reviewCount}) · {doctor.distanceKm} km
           </p>
         </div>
       </div>
@@ -83,7 +86,7 @@ export function DoctorProfilePage() {
           {reviews.map((r) => (
             <div key={r.id} className="rounded-[var(--radius-card)] border border-[var(--border)] p-3 text-sm">
               <div className="font-medium">
-                {r.author} · ★ {r.rating}
+                {r.author} · <Star size={12} strokeWidth={1.5} className="inline fill-current" /> {r.rating}
               </div>
               <p className="mt-1 text-[var(--muted)]">{r.text}</p>
             </div>

@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { AppShell } from '@/layouts/AppShell'
-import { ProShell } from '@/layouts/ProShell'
 import { useMedicStore } from '@/store/medic-store'
 import { Button } from '@/components/ui/button'
 import type { ProRole } from '@/types'
 import { uz } from '@/content/uz'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { HomePage } from '@/pages/app/HomePage'
 import { AIChatPage } from '@/pages/app/AIChatPage'
 import { AIResultPage } from '@/pages/app/AIResultPage'
@@ -21,13 +20,13 @@ import { ClinicsPage } from '@/pages/app/ClinicsPage'
 import { MapPage } from '@/pages/app/MapPage'
 import { ProfilePage } from '@/pages/app/ProfilePage'
 import { ConsultPage } from '@/pages/app/ConsultPage'
-import { PharmacyOrdersPage } from '@/pages/pro/pharmacy/PharmacyOrdersPage'
-import { PharmacyInventoryPage } from '@/pages/pro/pharmacy/PharmacyInventoryPage'
-import { PharmacyAdsPage } from '@/pages/pro/pharmacy/PharmacyAdsPage'
-import { ClinicAppointmentsPage } from '@/pages/pro/clinic/ClinicAppointmentsPage'
-import { ClinicStatsPage } from '@/pages/pro/clinic/ClinicStatsPage'
-import { DoctorSchedulePage } from '@/pages/pro/doctor/DoctorSchedulePage'
-import { DoctorPatientsPage } from '@/pages/pro/doctor/DoctorPatientsPage'
+import { ClinicDoctorsPage } from '@/pages/pro/clinic/ClinicDoctorsPage'
+import { ClinicNetworkPage } from '@/pages/pro/clinic/ClinicNetworkPage'
+import { HospitalBedsPage } from '@/pages/pro/hospital/HospitalBedsPage'
+import { HospitalAdmissionsPage } from '@/pages/pro/hospital/HospitalAdmissionsPage'
+import { DoctorConsultationsPage } from '@/pages/pro/doctor/DoctorConsultationsPage'
+import { ProDashboardPage } from '@/pages/pro/ProDashboardPage'
+import { ProMessagesPage } from '@/pages/pro/ProMessagesPage'
 
 function MiniApp() {
   return (
@@ -50,6 +49,12 @@ function MiniApp() {
               <Route path="clinics" element={<ClinicsPage />} />
               <Route path="map" element={<MapPage />} />
               <Route path="profile" element={<ProfilePage />} />
+              <Route path="clinic/doctors" element={<ClinicDoctorsPage />} />
+              <Route path="clinic/network" element={<ClinicNetworkPage />} />
+              <Route path="hospital/beds" element={<HospitalBedsPage />} />
+              <Route path="hospital/admissions" element={<HospitalAdmissionsPage />} />
+              <Route path="doctor/consultations" element={<DoctorConsultationsPage />} />
+              <Route path="messages" element={<ProMessagesPage />} />
             </Routes>
           </div>
         </div>
@@ -71,17 +76,18 @@ export function SplitDemoPage() {
   const roles: { id: ProRole; label: string }[] = [
     { id: 'pharmacy', label: uz.pro.rolePharmacy },
     { id: 'clinic', label: uz.pro.roleClinic },
+    { id: 'hospital', label: uz.pro.roleHospital },
     { id: 'doctor', label: uz.pro.roleDoctor },
   ]
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--surface)]">
-      <div className="flex items-center gap-3 border-b border-[var(--border)] bg-[var(--bg)] px-4 py-3">
+      <div className="flex flex-wrap items-center gap-3 border-b border-[var(--border)] bg-[var(--bg)] px-4 py-3">
         <Link to="/" className="text-[var(--muted)] hover:text-[var(--fg)]">
           <ArrowLeft size={18} strokeWidth={1.5} />
         </Link>
         <span className="text-sm font-semibold">{uz.hub.splitDemo}</span>
-        <div className="ml-auto flex gap-1">
+        <div className="ml-auto flex flex-wrap gap-1">
           {roles.map((r) => (
             <Button
               key={r.id}
@@ -102,9 +108,7 @@ export function SplitDemoPage() {
         <div className="min-w-0 flex-1 overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)]">
           <p className="border-b border-[var(--border)] px-4 py-2 text-xs text-[var(--muted)]">Pro panel</p>
           <div className="max-h-[844px] overflow-auto p-4">
-            {role === 'pharmacy' && <PharmacyOrdersPage />}
-            {role === 'clinic' && <ClinicAppointmentsPage />}
-            {role === 'doctor' && <DoctorSchedulePage />}
+            <ProDashboardPage />
           </div>
         </div>
       </div>

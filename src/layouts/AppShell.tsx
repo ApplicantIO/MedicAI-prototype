@@ -20,11 +20,12 @@ export function AppShell() {
     loc.pathname.startsWith('/app/cart') ||
     loc.pathname.startsWith('/app/orders') ||
     loc.pathname === '/app/ai/result'
+  const reserveDemoPanelSpace = loc.pathname !== '/app/ai' && loc.pathname !== '/app/welcome'
 
 
   const content = (
     <div className="flex h-full min-h-0 flex-col bg-[var(--bg)] text-[var(--fg)]">
-      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin">
+      <div className={`min-h-0 flex-1 overflow-y-auto scrollbar-thin ${reserveDemoPanelSpace ? 'pb-14' : ''}`}>
         <Outlet />
       </div>
       {!hideTab && (
@@ -57,13 +58,9 @@ export function AppShell() {
     </div>
   )
 
-  // On desktop show phone frame centered
   return (
-    <div className="flex min-h-full items-center justify-center bg-[var(--surface)] p-4 md:min-h-dvh">
-      <div className="phone-frame hidden md:flex">
-        <div className="phone-frame-inner">{content}</div>
-      </div>
-      <div className="flex h-dvh w-full max-w-[430px] flex-col md:hidden">{content}</div>
+    <div className="flex min-h-dvh items-center justify-center bg-[var(--surface)] md:p-4">
+      <div className="app-shell-frame">{content}</div>
     </div>
   )
 }

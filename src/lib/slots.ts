@@ -8,28 +8,27 @@ export function hashSeed(input: string): number {
   return Math.abs(h)
 }
 
-const SLOT_TIMES = [
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '14:00',
-  '14:30',
-  '15:00',
-  '15:30',
-  '16:00',
-  '16:30',
-  '17:00',
-]
-
-export function getDaySlots(doctorId: string, dateIso: string): { time: string; available: boolean }[] {
+export function getDaySlots(
+  doctorId: string,
+  dateIso: string,
+  slotMinutes = 30,
+  breakEnabled = true,
+): { time: string; available: boolean }[] {
   const seed = hashSeed(`${doctorId}:${dateIso}`)
-  return SLOT_TIMES.map((time, idx) => {
-    const blocked = (seed + idx * 7) % 5 === 0 || (seed + idx) % 11 === 0
-    return { time, available: !blocked }
+  const shifts: [number, number][] = breakEnabled
+    ? [[9 * 60, 12 * 60 - slotMinutes], [14 * 60, 17 * 60]]
+    : [[9 * 60, 17 * 60]]
+  const times = shifts.flatMap(([start, end]) => {
+    const shiftTimes: string[] = []
+    for (let minutes = start; minutes <= end; minutes += slotMinutes) {
+      shiftTimes.push(`${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`)
+    }
+    return shiftTimes
   })
+  return times.map((time, idx) => ({
+    time,
+    available: !((seed + idx * 7) % 5 === 0 || (seed + idx) % 11 === 0),
+  }))
 }
 
 export function nextSevenDays(from = new Date()): string[] {

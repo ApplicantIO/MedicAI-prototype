@@ -4,7 +4,8 @@ import { Badge } from '@/components/ui/badge'
 import { uz } from '@/content/uz'
 
 export function DoctorPatientsPage() {
-  const appointments = useMedicStore((s) => s.appointments)
+  const allAppointments = useMedicStore((s) => s.appointments)
+  const appointments = allAppointments.filter((appointment) => appointment.doctorId === 'd1')
 
   return (
     <div>

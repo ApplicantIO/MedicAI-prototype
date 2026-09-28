@@ -25,10 +25,20 @@ import { ProLoginPage } from '@/pages/pro/ProLoginPage'
 import { PharmacyOrdersPage } from '@/pages/pro/pharmacy/PharmacyOrdersPage'
 import { PharmacyInventoryPage } from '@/pages/pro/pharmacy/PharmacyInventoryPage'
 import { PharmacyAdsPage } from '@/pages/pro/pharmacy/PharmacyAdsPage'
+import { PharmacyReportsPage } from '@/pages/pro/pharmacy/PharmacyReportsPage'
 import { ClinicAppointmentsPage } from '@/pages/pro/clinic/ClinicAppointmentsPage'
 import { ClinicStatsPage } from '@/pages/pro/clinic/ClinicStatsPage'
 import { DoctorSchedulePage } from '@/pages/pro/doctor/DoctorSchedulePage'
 import { DoctorPatientsPage } from '@/pages/pro/doctor/DoctorPatientsPage'
+import { DoctorConsultationsPage } from '@/pages/pro/doctor/DoctorConsultationsPage'
+import { ClinicDoctorsPage } from '@/pages/pro/clinic/ClinicDoctorsPage'
+import { ClinicNetworkPage } from '@/pages/pro/clinic/ClinicNetworkPage'
+import { HospitalBedsPage } from '@/pages/pro/hospital/HospitalBedsPage'
+import { HospitalAdmissionsPage } from '@/pages/pro/hospital/HospitalAdmissionsPage'
+import { ProDashboardPage } from '@/pages/pro/ProDashboardPage'
+import { ProMessagesPage } from '@/pages/pro/ProMessagesPage'
+import { ProLicensePage } from '@/pages/pro/ProLicensePage'
+import { ProSettingsPage } from '@/pages/pro/ProSettingsPage'
 import { useMedicStore } from '@/store/medic-store'
 
 function ProGuard({ children }: { children: React.ReactNode }) {
@@ -93,11 +103,24 @@ export default function App() {
           <Route path="pharmacy/orders" element={<PharmacyOrdersPage />} />
           <Route path="pharmacy/inventory" element={<PharmacyInventoryPage />} />
           <Route path="pharmacy/ads" element={<PharmacyAdsPage />} />
+          <Route path="pharmacy/reports" element={<PharmacyReportsPage />} />
+          <Route path="pharmacy" element={<ProDashboardPage />} />
+          <Route path="clinic" element={<ProDashboardPage />} />
           <Route path="clinic/appointments" element={<ClinicAppointmentsPage />} />
           <Route path="clinic/stats" element={<ClinicStatsPage />} />
+          <Route path="clinic/doctors" element={<ClinicDoctorsPage />} />
+          <Route path="clinic/network" element={<ClinicNetworkPage />} />
+          <Route path="hospital" element={<ProDashboardPage />} />
+          <Route path="hospital/beds" element={<HospitalBedsPage />} />
+          <Route path="hospital/admissions" element={<HospitalAdmissionsPage />} />
           <Route path="doctor/schedule" element={<DoctorSchedulePage />} />
           <Route path="doctor/patients" element={<DoctorPatientsPage />} />
-          <Route index element={<Navigate to="pharmacy/orders" replace />} />
+          <Route path="doctor/consultations" element={<DoctorConsultationsPage />} />
+          <Route path="doctor" element={<ProDashboardPage />} />
+          <Route path="messages" element={<ProMessagesPage />} />
+          <Route path="license" element={<ProLicensePage />} />
+          <Route path="settings" element={<ProSettingsPage />} />
+          <Route index element={<ProDashboardPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

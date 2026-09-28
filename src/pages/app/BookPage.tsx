@@ -13,6 +13,8 @@ export function BookPage() {
   const [sp] = useSearchParams()
   const doctor = doctorsSeed.find((d) => d.id === id)
   const addAppointment = useMedicStore((s) => s.addAppointment)
+  const slotMinutes = useMedicStore((s) => s.doctorScheduleSlotMinutes)
+  const breakEnabled = useMedicStore((s) => s.doctorBreakEnabled)
 
   const [type, setType] = useState<ConsultType>(sp.get('type') === 'online' ? 'online' : 'offline')
   const days = nextSevenDays()
@@ -20,7 +22,7 @@ export function BookPage() {
   const [time, setTime] = useState<string | null>(null)
   const [done, setDone] = useState<{ code: string; id: string } | null>(null)
 
-  const slots = useMemo(() => (doctor ? getDaySlots(doctor.id, date) : []), [date, doctor])
+  const slots = useMemo(() => (doctor ? getDaySlots(doctor.id, date, slotMinutes, breakEnabled) : []), [date, doctor, slotMinutes, breakEnabled])
 
   if (!doctor) return <div className="p-4">Topilmadi</div>
   const clinic = clinicsSeed.find((c) => c.id === doctor.clinicId)!
@@ -49,13 +51,13 @@ export function BookPage() {
 
       <section className="mt-5">
         <h2 className="mb-2 text-sm font-medium">{uz.book.type}</h2>
-        <div className="flex gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {(['offline', 'online'] as const).map((t) => (
             <button
               key={t}
               type="button"
               onClick={() => setType(t)}
-              className={`flex-1 rounded-[var(--radius-input)] border py-2.5 text-sm ${
+              className={`min-h-11 rounded-[var(--radius-input)] border px-3 text-sm ${
                 type === t ? 'border-[var(--fg)] font-medium' : 'border-[var(--border)]'
               }`}
             >
@@ -67,7 +69,7 @@ export function BookPage() {
 
       <section className="mt-5">
         <h2 className="mb-2 text-sm font-medium">{uz.book.date}</h2>
-        <div className="flex gap-2 overflow-x-auto pb-1">
+        <div className="scrollbar-hidden flex gap-2 overflow-x-auto pb-1">
           {days.map((d) => (
             <button
               key={d}
@@ -76,7 +78,7 @@ export function BookPage() {
                 setDate(d)
                 setTime(null)
               }}
-              className={`shrink-0 rounded-[var(--radius-input)] border px-3 py-2 text-xs ${
+              className={`min-h-11 shrink-0 rounded-[var(--radius-input)] border px-3 text-xs ${
                 date === d ? 'border-[var(--fg)] font-medium' : 'border-[var(--border)]'
               }`}
             >
@@ -95,7 +97,7 @@ export function BookPage() {
               type="button"
               disabled={!s.available}
               onClick={() => setTime(s.time)}
-              className={`rounded-[var(--radius-input)] border py-2 text-xs disabled:opacity-30 ${
+              className={`min-h-11 rounded-[var(--radius-input)] border py-2 text-xs disabled:opacity-30 ${
                 time === s.time ? 'border-[var(--fg)] font-medium' : 'border-[var(--border)]'
               }`}
             >

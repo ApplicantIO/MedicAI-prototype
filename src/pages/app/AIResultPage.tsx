@@ -1,4 +1,5 @@
 import { Link, Navigate } from 'react-router-dom'
+import { Star } from 'lucide-react'
 import { uz } from '@/content/uz'
 import { useMedicStore } from '@/store/medic-store'
 import { doctorsSeed } from '@/data/doctors'
@@ -13,9 +14,15 @@ export function AIResultPage() {
 
   const urgencyColor =
     result.urgency === 'high' ? 'danger' : result.urgency === 'medium' ? 'warn' : 'ok'
-  const suggested = doctorsSeed
-    .filter((d) => d.specialty.toLowerCase().includes(result.specialist.toLowerCase().slice(0, 5)) || true)
-    .slice(0, 3)
+  const specialist = result.specialist.trim().toLowerCase()
+  const matchingDoctors = specialist
+    ? doctorsSeed.filter((d) => {
+        const doctorSpecialty = d.specialty.toLowerCase()
+        return doctorSpecialty.includes(specialist) || specialist.includes(doctorSpecialty)
+      })
+    : []
+  const fallbackDoctors = doctorsSeed.filter((d) => d.specialty.toLowerCase().includes('terapevt'))
+  const suggested = (matchingDoctors.length ? matchingDoctors : fallbackDoctors.length ? fallbackDoctors : doctorsSeed).slice(0, 3)
 
   return (
     <div className="px-4 pb-8 pt-5">
@@ -85,8 +92,8 @@ export function AIResultPage() {
               </div>
               <div className="flex-1">
                 <div className="text-sm font-medium">{d.name}</div>
-                <div className="text-xs text-[var(--muted)]">
-                  {d.specialty} · ★ {d.rating}
+                <div className="flex items-center gap-1 text-xs text-[var(--muted)]">
+                  {d.specialty} · <Star size={12} strokeWidth={1.5} className="fill-current" /> {d.rating}
                 </div>
               </div>
             </Link>

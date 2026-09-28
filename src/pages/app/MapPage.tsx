@@ -10,13 +10,13 @@ export function MapPage() {
     <div className="px-4 pb-6 pt-4">
       <h1 className="mb-2 text-xl font-semibold">{uz.map.title}</h1>
       <p className="mb-3 text-xs text-[var(--muted)]">{uz.map.mockNote}</p>
-      <div className="mb-3 flex gap-1.5 overflow-x-auto">
+      <div className="scrollbar-hidden mb-3 flex gap-2 overflow-x-auto">
         {(['all', 'clinic', 'pharmacy', 'hospital'] as const).map((f) => (
           <button
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={`shrink-0 rounded-full border px-3 py-1 text-xs ${
+            className={`min-h-11 shrink-0 rounded-full border px-3 text-xs ${
               filter === f ? 'border-[var(--fg)]' : 'border-[var(--border)]'
             }`}
           >
@@ -66,7 +66,13 @@ export function MapPage() {
         {pins.map((p) => (
           <li key={p.id} className="flex justify-between text-sm">
             <span>{p.name}</span>
-            <span className="text-xs capitalize text-[var(--muted)]">{p.type}</span>
+            <span className="text-xs text-[var(--muted)]">
+              {p.type === 'clinic'
+                ? uz.map.filterClinic
+                : p.type === 'hospital'
+                  ? uz.map.filterHospital
+                  : uz.map.filterPharmacy}
+            </span>
           </li>
         ))}
       </ul>

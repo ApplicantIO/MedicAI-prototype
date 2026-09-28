@@ -14,9 +14,9 @@ export function PharmacyOrdersPage() {
   return (
     <div>
       <h1 className="mb-4 text-2xl font-semibold">Buyurtmalar</h1>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-12 gap-4">
         {COLUMNS.map((col) => (
-          <div key={col} className="rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-3">
+          <div key={col} className="col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-3 md:col-span-6 xl:col-span-3">
             <div className="mb-3 text-sm font-semibold">{uz.order.status[col]}</div>
             <div className="space-y-2">
               {orders

@@ -16,4 +16,8 @@ export const appointmentsSeed: Appointment[] = [
   { id: 'a6', doctorId: 'd9', clinicId: 'c3', type: 'online', date: d(2), time: '16:00', status: 'pending', code: 'QBL-5512', patientName: 'Demo Foydalanuvchi' },
   { id: 'a7', doctorId: 'd10', clinicId: 'c4', type: 'offline', date: d(-1), time: '10:30', status: 'cancelled', code: 'QBL-0044', patientName: 'Demo Foydalanuvchi' },
   { id: 'a8', doctorId: 'd11', clinicId: 'c1', type: 'offline', date: d(5), time: '09:30', status: 'confirmed', code: 'QBL-6678', patientName: 'Demo Foydalanuvchi' },
+  { id: 'a9', doctorId: 'd8', clinicId: 'c6', type: 'offline', date: d(0), time: '09:30', status: 'pending', code: 'QBL-2094', patientName: 'A. Qodirov' },
+  { id: 'a10', doctorId: 'd12', clinicId: 'c6', type: 'offline', date: d(0), time: '11:00', status: 'confirmed', code: 'QBL-6207', patientName: 'M. Karimova' },
+  { id: 'a11', doctorId: 'd1', clinicId: 'c1', type: 'online', date: d(0), time: '10:30', status: 'pending', code: 'QBL-4173', patientName: 'S. Ahmedova' },
+  { id: 'a12', doctorId: 'd1', clinicId: 'c1', type: 'offline', date: d(1), time: '13:30', status: 'confirmed', code: 'QBL-8651', patientName: 'B. Usmonov' },
 ]

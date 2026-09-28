@@ -12,6 +12,12 @@ export function PharmacyInventoryPage() {
   const setInventoryConnected = useMedicStore((s) => s.setInventoryConnected)
   const [step, setStep] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [query, setQuery] = useState('')
+  const lowStockCount = inventory.filter((row) => row.stock <= 10).length
+  const visibleInventory = inventory.filter((row) => {
+    const drug = drugsSeed.find((item) => item.id === row.drugId)
+    return drug?.name.toLowerCase().includes(query.trim().toLowerCase())
+  })
 
   const startConnect = () => {
     setStep(1)
@@ -59,7 +65,14 @@ export function PharmacyInventoryPage() {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-[var(--radius-card)] border border-[var(--border)]">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ombordan dori qidirish…" className="max-w-md" />
+        <span className={`text-xs ${lowStockCount ? 'text-[var(--status-warn)]' : 'text-[var(--muted)]'}`}>
+          Kam qoldiq: {lowStockCount}
+        </span>
+      </div>
+
+      <div className="scrollbar-thin overflow-x-auto rounded-[var(--radius-card)] border border-[var(--border)]">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-[var(--border)] bg-[var(--surface)] text-xs text-[var(--muted)]">
             <tr>
@@ -69,11 +82,11 @@ export function PharmacyInventoryPage() {
             </tr>
           </thead>
           <tbody>
-            {inventory.slice(0, 20).map((row) => {
+            {visibleInventory.slice(0, 20).map((row) => {
               const d = drugsSeed.find((x) => x.id === row.drugId)
               return (
-                <tr key={row.drugId} className="border-b border-[var(--border)]">
-                  <td className="px-3 py-2">{d?.name}</td>
+                <tr key={row.drugId} className={`border-b border-[var(--border)] ${row.stock <= 10 ? 'bg-[var(--status-warn)]/5' : ''}`}>
+                  <td className="px-3 py-2">{d?.name}{row.stock <= 10 && <span className="ml-2 text-[11px] text-[var(--status-warn)]">Kam qoldi</span>}</td>
                   <td className="px-3 py-2">
                     <Input
                       type="number"

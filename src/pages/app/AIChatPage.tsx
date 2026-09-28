@@ -17,20 +17,24 @@ export function AIChatPage() {
   const [input, setInput] = useState('')
   const [typing, setTyping] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
+  const didInit = useRef(false)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [aiChat.messages, typing])
 
   useEffect(() => {
-    if (aiChat.messages.length === 0 && !aiChat.scenarioId) {
+    if (didInit.current) return
+    didInit.current = true
+
+    if (aiChat.messages.length === 0 && aiChat.scenarioId === null) {
       pushAIMessage({
         id: `m${Date.now()}`,
         role: 'ai',
         text: 'Salom! Asosiy shikoyatingiz nima? Chip tanlang yoki yozing.',
       })
     }
-  }, [])
+  }, [aiChat.messages.length, aiChat.scenarioId, pushAIMessage])
 
   const scenario: AIScenario | null = aiChat.scenarioId
     ? AI_SCENARIOS.find((s) => s.id === aiChat.scenarioId) ?? null
@@ -95,7 +99,7 @@ export function AIChatPage() {
             pushAIMessage({
               id: `m${Date.now()}`,
               role: 'ai',
-              text: 'Salom! Asosiy shikoyatingiz nima?',
+              text: 'Salom! Asosiy shikoyatingiz nima? Chip tanlang yoki yozing.',
             })
           }}
         >

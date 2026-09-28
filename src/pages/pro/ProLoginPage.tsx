@@ -14,10 +14,12 @@ export function ProLoginPage() {
     setProLoggedIn(true)
     const path =
       role === 'pharmacy'
-        ? '/pro/panel/pharmacy/orders'
+        ? '/pro/panel/pharmacy'
         : role === 'clinic'
-          ? '/pro/panel/clinic/appointments'
-          : '/pro/panel/doctor/schedule'
+          ? '/pro/panel/clinic'
+          : role === 'hospital'
+            ? '/pro/panel/hospital'
+            : '/pro/panel/doctor'
     navigate(path)
   }
 
@@ -30,6 +32,9 @@ export function ProLoginPage() {
           <Button onClick={() => enter('pharmacy')}>{uz.pro.rolePharmacy}</Button>
           <Button variant="outline" onClick={() => enter('clinic')}>
             {uz.pro.roleClinic}
+          </Button>
+          <Button variant="outline" onClick={() => enter('hospital')}>
+            {uz.pro.roleHospital}
           </Button>
           <Button variant="outline" onClick={() => enter('doctor')}>
             {uz.pro.roleDoctor}

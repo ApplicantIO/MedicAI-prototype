@@ -33,11 +33,11 @@ export function DoctorSchedulePage() {
           />
         </label>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-12 gap-4">
         {days.map((day) => {
-          const slots = getDaySlots(doctorId, day)
+          const slots = getDaySlots(doctorId, day, slotMin, breakEnabled)
           return (
-            <div key={day} className="rounded-[var(--radius-card)] border border-[var(--border)] p-3">
+            <div key={day} className="col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] p-3 md:col-span-6 lg:col-span-4 xl:col-span-3">
               <div className="mb-2 text-sm font-semibold">{day}</div>
               <div className="flex flex-wrap gap-1">
                 {slots.map((s) => (

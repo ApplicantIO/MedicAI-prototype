@@ -5,6 +5,9 @@ import { appointmentsSeed } from '@/data/appointments'
 import { ordersSeed } from '@/data/orders'
 import { pharmaciesSeed } from '@/data/pharmacies'
 import { drugsSeed } from '@/data/drugs'
+import { doctorsSeed } from '@/data/doctors'
+import { hospitalBedsSeed } from '@/data/hospital-beds'
+import { proMessagesSeed } from '@/data/pro-messages'
 import type {
   AIMessage,
   AIResult,
@@ -13,6 +16,8 @@ import type {
   CartItem,
   ConsultSummary,
   InventoryRow,
+  HospitalBed,
+  MessageThread,
   Order,
   OrderStatus,
   ProRole,
@@ -43,6 +48,13 @@ export interface MedicState {
   inventory: InventoryRow[]
   inventoryConnected: boolean
   inventorySyncedAt: string | null
+  providerProfile: { name: string; phone: string }
+  demoLicensePlan: string
+  doctorAvailability: Record<string, boolean>
+  clinicDoctorInvites: { id: string; name: string; specialty: string; contact: string; status: 'sent' }[]
+  pharmacyPartners: Record<string, boolean>
+  hospitalBeds: HospitalBed[]
+  proMessages: MessageThread[]
   savedDoctorIds: string[]
   aiHistory: { id: string; scenarioId: string; at: string }[]
   aiChat: AIChatState
@@ -67,6 +79,15 @@ export interface MedicState {
   setAppointmentStatus: (id: string, status: AppointmentStatus) => void
   updateInventory: (drugId: string, patch: Partial<InventoryRow>) => void
   setInventoryConnected: (v: boolean, at?: string) => void
+  setProviderProfile: (profile: { name: string; phone: string }) => void
+  setDemoLicensePlan: (plan: string) => void
+  setDoctorAvailability: (doctorId: string, available: boolean) => void
+  inviteClinicDoctor: (invite: { name: string; specialty: string; contact: string }) => void
+  removeClinicDoctorInvite: (inviteId: string) => void
+  setPharmacyPartner: (pharmacyId: string, partner: boolean) => void
+  setHospitalBed: (bedId: string, status: HospitalBed['status'], patientName?: string) => void
+  addProMessage: (threadId: string, text: string) => void
+  removeProMessage: (threadId: string, messageId: string) => void
   toggleSavedDoctor: (id: string) => void
   resetAIChat: () => void
   setAIChat: (patch: Partial<AIChatState>) => void
@@ -84,8 +105,16 @@ function initialInventory(): InventoryRow[] {
   return drugsSeed.map((d) => ({
     drugId: d.id,
     price: d.basePrice,
-    stock: 10 + (d.id.charCodeAt(2) % 30),
+    stock: 3 + (d.id.charCodeAt(2) % 18),
   }))
+}
+
+function initialDoctorAvailability(): Record<string, boolean> {
+  return Object.fromEntries(doctorsSeed.map((doctor) => [doctor.id, doctor.onlineNow]))
+}
+
+function initialPharmacyPartners(): Record<string, boolean> {
+  return Object.fromEntries(pharmaciesSeed.map((pharmacy) => [pharmacy.id, ['p1', 'p3'].includes(pharmacy.id)]))
 }
 
 function emptyAIChat(): AIChatState {
@@ -121,6 +150,13 @@ export const useMedicStore = create<MedicState>()(
       inventory: initialInventory(),
       inventoryConnected: false,
       inventorySyncedAt: null,
+      providerProfile: { name: 'Medic AI hamkor', phone: '+998 90 000 00 00' },
+      demoLicensePlan: 'start',
+      doctorAvailability: initialDoctorAvailability(),
+      clinicDoctorInvites: [],
+      pharmacyPartners: initialPharmacyPartners(),
+      hospitalBeds: cloneSeed(hospitalBedsSeed),
+      proMessages: cloneSeed(proMessagesSeed),
       savedDoctorIds: [],
       aiHistory: [],
       aiChat: emptyAIChat(),
@@ -140,6 +176,13 @@ export const useMedicStore = create<MedicState>()(
           inventory: initialInventory(),
           inventoryConnected: false,
           inventorySyncedAt: null,
+          providerProfile: { name: 'Medic AI hamkor', phone: '+998 90 000 00 00' },
+          demoLicensePlan: 'start',
+          doctorAvailability: initialDoctorAvailability(),
+          clinicDoctorInvites: [],
+          pharmacyPartners: initialPharmacyPartners(),
+          hospitalBeds: cloneSeed(hospitalBedsSeed),
+          proMessages: cloneSeed(proMessagesSeed),
           savedDoctorIds: [],
           aiHistory: [],
           aiChat: emptyAIChat(),
@@ -239,6 +282,57 @@ export const useMedicStore = create<MedicState>()(
 
       setInventoryConnected: (inventoryConnected, at) =>
         set({ inventoryConnected, inventorySyncedAt: at ?? new Date().toISOString() }),
+      setProviderProfile: (providerProfile) => set({ providerProfile }),
+      setDemoLicensePlan: (demoLicensePlan) => set({ demoLicensePlan }),
+
+      setDoctorAvailability: (doctorId, available) =>
+        set((s) => ({ doctorAvailability: { ...s.doctorAvailability, [doctorId]: available } })),
+
+      inviteClinicDoctor: (invite) =>
+        set((s) => ({ clinicDoctorInvites: [{ ...invite, id: `invite-${Date.now()}`, status: 'sent' }, ...s.clinicDoctorInvites] })),
+
+      removeClinicDoctorInvite: (inviteId) =>
+        set((s) => ({ clinicDoctorInvites: s.clinicDoctorInvites.filter((invite) => invite.id !== inviteId) })),
+
+      setPharmacyPartner: (pharmacyId, partner) =>
+        set((s) => ({ pharmacyPartners: { ...s.pharmacyPartners, [pharmacyId]: partner } })),
+
+      setHospitalBed: (bedId, status, patientName) =>
+        set((s) => ({
+          hospitalBeds: s.hospitalBeds.map((bed) =>
+            bed.id === bedId
+              ? { ...bed, status, patientName: status === 'occupied' ? patientName || 'Yangi bemor' : undefined }
+              : bed,
+          ),
+        })),
+
+      addProMessage: (threadId, text) => {
+        const response = 'Xabaringiz qabul qilindi. Tez orada javob beramiz.'
+        const at = new Date().toISOString()
+        set((s) => ({
+          proMessages: s.proMessages.map((thread) =>
+            thread.id === threadId
+              ? {
+                  ...thread,
+                  messages: [
+                    ...thread.messages,
+                    { id: `msg-${Date.now()}`, from: 'provider', text, at },
+                    { id: `reply-${Date.now()}`, from: 'system', text: response, at },
+                  ],
+                }
+              : thread,
+          ),
+        }))
+      },
+
+      removeProMessage: (threadId, messageId) =>
+        set((s) => ({
+          proMessages: s.proMessages.map((thread) =>
+            thread.id === threadId
+              ? { ...thread, messages: thread.messages.filter((message) => message.id !== messageId) }
+              : thread,
+          ),
+        })),
 
       toggleSavedDoctor: (id) =>
         set((s) => ({
@@ -269,6 +363,17 @@ export const useMedicStore = create<MedicState>()(
     }),
     {
       name: APP_CONFIG.storageKey,
+      version: 1,
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<MedicState>
+        const appointments = persisted.appointments ?? currentState.appointments
+        const savedIds = new Set(appointments.map((appointment) => appointment.id))
+        return {
+          ...currentState,
+          ...persisted,
+          appointments: [...appointments, ...currentState.appointments.filter((appointment) => !savedIds.has(appointment.id))],
+        }
+      },
       partialize: (s) => ({
         theme: s.theme,
         welcomeDone: s.welcomeDone,
@@ -282,6 +387,13 @@ export const useMedicStore = create<MedicState>()(
         inventory: s.inventory,
         inventoryConnected: s.inventoryConnected,
         inventorySyncedAt: s.inventorySyncedAt,
+        providerProfile: s.providerProfile,
+        demoLicensePlan: s.demoLicensePlan,
+        doctorAvailability: s.doctorAvailability,
+        clinicDoctorInvites: s.clinicDoctorInvites,
+        pharmacyPartners: s.pharmacyPartners,
+        hospitalBeds: s.hospitalBeds,
+        proMessages: s.proMessages,
         savedDoctorIds: s.savedDoctorIds,
         aiHistory: s.aiHistory,
         aiChat: s.aiChat,
