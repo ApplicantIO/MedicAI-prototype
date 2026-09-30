@@ -85,7 +85,7 @@ export function PharmacyInventoryPage() {
             {visibleInventory.slice(0, 20).map((row) => {
               const d = drugsSeed.find((x) => x.id === row.drugId)
               return (
-                <tr key={row.drugId} className={`border-b border-[var(--border)] ${row.stock <= 10 ? 'bg-[var(--status-warn)]/5' : ''}`}>
+                <tr key={row.drugId} className="border-b border-[var(--border)]">
                   <td className="px-3 py-2">{d?.name}{row.stock <= 10 && <span className="ml-2 text-[11px] text-[var(--status-warn)]">Kam qoldi</span>}</td>
                   <td className="px-3 py-2">
                     <Input

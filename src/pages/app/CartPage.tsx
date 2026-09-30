@@ -5,7 +5,7 @@ import { useMedicStore } from '@/store/medic-store'
 import { drugsSeed } from '@/data/drugs'
 import { pharmaciesSeed } from '@/data/pharmacies'
 import { Button } from '@/components/ui/button'
-import type { DeliveryMode, PaymentMethod } from '@/types'
+import type { DeliveryMode, OrderPriority, PaymentMethod } from '@/types'
 
 export function CartPage() {
   const cart = useMedicStore((s) => s.cart)
@@ -14,6 +14,8 @@ export function CartPage() {
   const navigate = useNavigate()
   const [delivery, setDelivery] = useState<DeliveryMode>('pickup')
   const [pay, setPay] = useState<PaymentMethod>('card')
+  const [priority, setPriority] = useState<OrderPriority>('standard')
+  const [address, setAddress] = useState('')
 
   if (cart.length === 0) {
     return (
@@ -48,7 +50,7 @@ export function CartPage() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  className="h-8 w-8 rounded border border-[var(--border)]"
+                  className="h-11 w-11 rounded-[var(--radius-input)] border border-[var(--border)]"
                   onClick={() => updateCartQty(c.drugId, c.pharmacyId, c.quantity - 1)}
                 >
                   −
@@ -56,7 +58,7 @@ export function CartPage() {
                 <span className="w-6 text-center text-sm">{c.quantity}</span>
                 <button
                   type="button"
-                  className="h-8 w-8 rounded border border-[var(--border)]"
+                  className="h-11 w-11 rounded-[var(--radius-input)] border border-[var(--border)]"
                   onClick={() => updateCartQty(c.drugId, c.pharmacyId, c.quantity + 1)}
                 >
                   +
@@ -68,15 +70,15 @@ export function CartPage() {
       </div>
 
       <div className="mt-5">
-        <div className="mb-2 text-sm font-medium">Yetkazib berish</div>
+        <div className="mb-2 text-sm font-medium">{uz.order.delivery}</div>
         <div className="flex gap-2">
           {(['pickup', 'delivery'] as const).map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setDelivery(m)}
-              className={`flex-1 rounded-[var(--radius-input)] border py-2 text-sm ${
-                delivery === m ? 'border-[var(--fg)]' : 'border-[var(--border)]'
+              className={`min-h-11 flex-1 rounded-[var(--radius-input)] border px-2 text-sm ${
+                delivery === m ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'
               }`}
             >
               {m === 'pickup' ? uz.cart.pickup : uz.cart.delivery}
@@ -85,16 +87,47 @@ export function CartPage() {
         </div>
       </div>
 
+      {delivery === 'delivery' && (
+        <div className="mt-4">
+          <label htmlFor="delivery-address" className="mb-2 block text-sm font-medium">{uz.order.address}</label>
+          <input
+            id="delivery-address"
+            value={address}
+            onChange={(event) => setAddress(event.target.value)}
+            className="min-h-11 w-full rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--bg)] px-3 text-sm text-[var(--fg)]"
+            placeholder={uz.cart.addressPlaceholder}
+          />
+        </div>
+      )}
+
       <div className="mt-4">
-        <div className="mb-2 text-sm font-medium">Toʻlov</div>
+        <div className="mb-2 text-sm font-medium">{uz.order.priorityStandard} / {uz.order.priorityExpress}</div>
+        <div className="flex gap-2">
+          {(['standard', 'express'] as const).map((value) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setPriority(value)}
+              className={`min-h-11 flex-1 rounded-[var(--radius-input)] border px-3 text-sm ${
+                priority === value ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'
+              }`}
+            >
+              {value === 'express' ? uz.order.priorityExpress : uz.order.priorityStandard}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <div className="mb-2 text-sm font-medium">{uz.cart.payment}</div>
         <div className="flex gap-2">
           {(['card', 'cash'] as const).map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setPay(m)}
-              className={`flex-1 rounded-[var(--radius-input)] border py-2 text-sm ${
-                pay === m ? 'border-[var(--fg)]' : 'border-[var(--border)]'
+              className={`min-h-11 flex-1 rounded-[var(--radius-input)] border px-2 text-sm ${
+                pay === m ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'
               }`}
             >
               {m === 'card' ? uz.cart.payCard : uz.cart.payCash}
@@ -104,18 +137,21 @@ export function CartPage() {
       </div>
 
       <div className="mt-6 flex items-center justify-between text-sm font-semibold">
-        <span>Jami</span>
-        <span>{total.toLocaleString('uz-UZ')} soʻm</span>
+        <span>{uz.order.total}</span>
+        <span>{total.toLocaleString('uz-UZ')} {uz.order.currency}</span>
       </div>
 
       <Button
         className="mt-4 w-full"
+        disabled={delivery === 'delivery' && !address.trim()}
         onClick={() => {
           const oid = placeOrder({
             pharmacyId,
             items: cart.map((c) => ({ drugId: c.drugId, quantity: c.quantity })),
             deliveryMode: delivery,
             paymentMethod: pay,
+            priority,
+            address: delivery === 'delivery' ? address.trim() : undefined,
           })
           navigate(`/app/orders/${oid}`)
         }}

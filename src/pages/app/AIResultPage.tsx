@@ -6,7 +6,7 @@ import { doctorsSeed } from '@/data/doctors'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MedicalDisclaimer } from '@/components/MedicalDisclaimer'
-import { initials, avatarColor } from '@/lib/avatar'
+import { initials } from '@/lib/avatar'
 
 export function AIResultPage() {
   const result = useMedicStore((s) => s.aiChat.result)
@@ -27,66 +27,59 @@ export function AIResultPage() {
   return (
     <div className="px-4 pb-8 pt-5">
       <h1 className="text-xl font-semibold">{uz.aiResult.title}</h1>
-      <MedicalDisclaimer className="mt-2" />
+      <MedicalDisclaimer compact className="mt-2" />
 
       {result.emergency && (
-        <div className="mt-4 rounded-[var(--radius-card)] border border-[var(--status-danger)] bg-[var(--status-danger)]/5 p-4">
-          <div className="font-semibold text-[var(--status-danger)]">Shoshilinch</div>
-          <p className="mt-1 text-sm">{result.emergencyNote ?? uz.call103}</p>
-          <a
-            href="tel:103"
-            className="mt-3 inline-flex h-11 items-center justify-center rounded-[var(--radius-input)] bg-[var(--status-danger)] px-4 text-sm font-semibold text-white"
-          >
-            103 ga qoʻngʻiroq
+        <div className="mt-4 border-y border-[var(--border)] py-3">
+          <Badge variant="danger">{uz.aiResult.emergency}</Badge>
+          <p className="mt-2 text-sm">{result.emergencyNote ?? uz.call103}</p>
+          <a href="tel:103" className="mt-2 inline-flex min-h-11 items-center rounded-[var(--radius-input)] border border-[var(--border)] px-3 text-sm font-medium hover:bg-[var(--surface)]">
+            {uz.aiResult.call103}
           </a>
         </div>
       )}
 
       <section className="mt-5">
         <h2 className="mb-2 text-sm font-semibold">{uz.aiResult.directions}</h2>
-        <ul className="space-y-1.5">
+        <ul className="divide-y divide-[var(--border)]">
           {result.directions.map((d) => (
-            <li key={d} className="rounded-[var(--radius-input)] border border-[var(--border)] px-3 py-2 text-sm">
+            <li key={d} className="py-2.5 text-sm">
               {d}
             </li>
           ))}
         </ul>
       </section>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-2">
         <div className="text-sm">
           <span className="text-[var(--muted)]">{uz.aiResult.urgency}: </span>
           <Badge variant={urgencyColor as 'ok' | 'warn' | 'danger'}>
             {uz.aiResult.urgencyLabels[result.urgency]}
           </Badge>
         </div>
-        <div className="text-sm">
-          <span className="text-[var(--muted)]">{uz.aiResult.specialist}: </span>
-          <span className="font-medium">{result.specialist}</span>
-        </div>
+        <span className="text-sm font-medium">{result.specialist}</span>
       </div>
 
       <section className="mt-5">
         <h2 className="mb-2 text-sm font-semibold">{uz.aiResult.selfCare}</h2>
-        <ul className="list-inside list-disc space-y-1 text-sm text-[var(--muted)]">
+        <ul className="divide-y divide-[var(--border)] text-sm text-[var(--muted)]">
           {result.selfCare.map((s) => (
-            <li key={s}>{s}</li>
+            <li key={s} className="py-2">{s}</li>
           ))}
         </ul>
       </section>
 
       <section className="mt-6">
         <h2 className="mb-2 text-sm font-semibold">{uz.aiResult.doctors}</h2>
-        <div className="space-y-2">
+        <div className="divide-y divide-[var(--border)]">
           {suggested.map((d) => (
             <Link
               key={d.id}
               to={`/app/doctors/${d.id}`}
-              className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-3"
+              className="flex items-center gap-3 py-3"
             >
               <div
-                className="flex h-10 w-10 items-center justify-center rounded-full text-xs font-semibold"
-                style={{ background: avatarColor(d.id) }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-medium text-[var(--muted)]"
               >
                 {initials(d.name)}
               </div>

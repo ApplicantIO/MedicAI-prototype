@@ -39,7 +39,7 @@ export function AppShell() {
                 className={({ isActive }) =>
                   cn(
                     'flex min-w-[56px] flex-col items-center justify-center gap-0.5 text-[11px] transition-colors',
-                    isActive ? 'text-[var(--accent)]' : 'text-[var(--muted)]',
+                    isActive ? 'text-[var(--fg)]' : 'text-[var(--muted)]',
                   )
                 }
               >

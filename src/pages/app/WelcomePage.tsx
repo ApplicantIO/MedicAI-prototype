@@ -21,16 +21,16 @@ export function WelcomePage() {
         {uz.welcome.skip}
       </button>
       <div className="flex flex-1 flex-col items-center justify-center text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[var(--surface)] text-2xl font-bold text-[var(--accent)]">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--surface)] text-lg font-semibold text-[var(--muted)]">
           {i + 1}
         </div>
-        <h1 className="text-2xl font-semibold">{slides[i]!.title}</h1>
-        <p className="mt-3 max-w-xs text-[var(--muted)]">{slides[i]!.text}</p>
+        <h1 className="text-xl font-semibold">{slides[i]!.title}</h1>
+        <p className="mt-2 max-w-xs text-sm text-[var(--muted)]">{slides[i]!.text}</p>
         <div className="mt-8 flex gap-2">
           {slides.map((_, idx) => (
             <span
               key={idx}
-              className={`h-1.5 w-6 rounded-full ${idx === i ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'}`}
+              className={`h-1.5 w-6 rounded-full ${idx === i ? 'bg-[var(--fg)]' : 'bg-[var(--border)]'}`}
             />
           ))}
         </div>
@@ -42,7 +42,7 @@ export function WelcomePage() {
           else finish()
         }}
       >
-        {i < slides.length - 1 ? 'Keyingi' : uz.welcome.start}
+        {i < slides.length - 1 ? uz.welcome.next : uz.welcome.start}
       </Button>
     </div>
   )

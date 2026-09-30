@@ -30,7 +30,7 @@ export function BookPage() {
   if (done) {
     return (
       <div className="flex flex-col items-center px-4 py-12 text-center">
-        <div className="mb-4 text-4xl text-[var(--status-ok)]">✓</div>
+        <div className="mb-3 text-2xl text-[var(--status-ok)]">✓</div>
         <h1 className="text-xl font-semibold">{uz.book.success}</h1>
         <p className="mt-2 text-[var(--muted)]">
           {uz.book.code}: <strong>{done.code}</strong>

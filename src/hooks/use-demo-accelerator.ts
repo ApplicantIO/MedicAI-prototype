@@ -9,11 +9,13 @@ export function useDemoAccelerator() {
 
   useEffect(() => {
     if (!enabled) return
-    const active = orders.filter((o) => o.status !== 'delivered')
+    const isActive = (status: (typeof orders)[number]['status']) =>
+      status !== 'delivered' && status !== 'failed' && status !== 'cancelled'
+    const active = orders.filter((order) => isActive(order.status))
     if (active.length === 0) return
 
     const id = window.setInterval(() => {
-      const latest = useMedicStore.getState().orders.find((o) => o.status !== 'delivered')
+      const latest = useMedicStore.getState().orders.find((order) => isActive(order.status))
       if (latest) advanceOrder(latest.id)
     }, APP_CONFIG.demoOrderStepMs)
 

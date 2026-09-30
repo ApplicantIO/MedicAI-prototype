@@ -45,8 +45,8 @@ export function DoctorSchedulePage() {
                     key={s.time}
                     className={`rounded px-1.5 py-0.5 text-[11px] ${
                       s.available
-                        ? 'bg-[var(--status-ok)]/10 text-[var(--status-ok)]'
-                        : 'bg-[var(--surface)] text-[var(--muted)] line-through'
+                        ? 'border border-[var(--border)] text-[var(--fg)]'
+                          : 'text-[var(--muted)] line-through'
                     }`}
                   >
                     {s.time}

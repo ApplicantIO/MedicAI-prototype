@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button'
 import { MedicalDisclaimer } from '@/components/MedicalDisclaimer'
 
 const cards = [
-  { to: '/app', label: uz.hub.cards.app, icon: Smartphone, desc: 'Mobil ilova' },
+  { to: '/app', label: uz.hub.cards.app, icon: Smartphone, desc: uz.hub.cardDescriptions.app },
   {
     to: '/pro',
     label: uz.hub.cards.pharmacy,
     icon: Pill,
-    desc: 'Dorixona',
+    desc: uz.hub.cardDescriptions.pharmacy,
     onClick: () => {},
     role: 'pharmacy' as const,
   },
@@ -20,21 +20,21 @@ const cards = [
     to: '/pro',
     label: uz.hub.cards.clinic,
     icon: Building2,
-    desc: 'Klinika',
+    desc: uz.hub.cardDescriptions.clinic,
     role: 'clinic' as const,
   },
   {
     to: '/pro',
     label: uz.hub.cards.hospital,
     icon: Hospital,
-    desc: 'Shifoxona',
+    desc: uz.hub.cardDescriptions.hospital,
     role: 'hospital' as const,
   },
   {
     to: '/pro',
     label: uz.hub.cards.doctor,
     icon: Stethoscope,
-    desc: 'Shifokor',
+    desc: uz.hub.cardDescriptions.doctor,
     role: 'doctor' as const,
   },
 ]
@@ -53,21 +53,21 @@ export function HubPage() {
 
   return (
     <div className="min-h-dvh bg-[var(--bg)] text-[var(--fg)]">
-      <div className="mx-auto max-w-3xl px-4 py-10 md:py-16">
-        <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mx-auto max-w-3xl px-4 py-8 md:py-12">
+        <div className="mb-6 flex items-start justify-between gap-4">
           <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--accent)]">
+            <p className="mb-2 text-xs text-[var(--muted)]">
               {uz.prototype}
             </p>
-            <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">{uz.hub.title}</h1>
-            <p className="mt-2 text-[var(--muted)]">{uz.hub.subtitle}</p>
+            <h1 className="text-xl font-semibold">{uz.hub.title}</h1>
+            <p className="mt-1 text-sm text-[var(--muted)]">{uz.hub.subtitle}</p>
           </div>
           <Button variant="outline" size="icon" onClick={toggleTheme} aria-label="Theme">
             {theme === 'dark' ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
           </Button>
         </div>
 
-        <div className="grid grid-cols-12 gap-3">
+        <div className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
           {cards.map((c) => (
             <Link
               key={c.label}
@@ -75,20 +75,20 @@ export function HubPage() {
               onClick={() => {
                 if (c.role) setProRole(c.role)
               }}
-              className="group col-span-12 flex items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-4 transition-colors hover:border-[var(--fg)] sm:col-span-6"
+              className="group flex items-center gap-3 py-3 transition-colors hover:bg-[var(--surface)]"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-[var(--radius-input)] bg-[var(--surface)] text-[var(--fg)]">
-                <c.icon size={22} strokeWidth={1.5} />
+              <div className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-input)] bg-[var(--surface)] text-[var(--muted)]">
+                <c.icon size={19} strokeWidth={1.5} />
               </div>
               <div>
-                <div className="font-semibold">{c.label}</div>
-                <div className="text-sm text-[var(--muted)]">{c.desc}</div>
+                <div className="text-sm font-medium">{c.label}</div>
+                <div className="text-xs text-[var(--muted)]">{c.desc}</div>
               </div>
             </Link>
           ))}
         </div>
 
-        <div className="mt-8 flex flex-col items-center gap-4 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--surface)] p-6 sm:flex-row sm:justify-between">
+        <div className="mt-6 flex flex-col items-center gap-4 border-y border-[var(--border)] py-4 sm:flex-row sm:justify-between">
           <div>
             <div className="font-semibold">{uz.hub.scanQr}</div>
             <p className="mt-1 text-sm text-[var(--muted)]">{origin}/app</p>
@@ -102,7 +102,7 @@ export function HubPage() {
         </div>
 
         <div className="mt-6">
-          <MedicalDisclaimer />
+          <MedicalDisclaimer compact />
         </div>
       </div>
     </div>

@@ -83,20 +83,19 @@ export function ProDashboardPage() {
     : roleAppointments.slice(0, 4).map((a) => ({ title: a.patientName, meta: `${a.date} · ${a.time} · ${uz.appointments.status[a.status]}`, to: role === 'doctor' ? '/pro/panel/doctor/consultations' : role === 'hospital' ? '/pro/panel/hospital/admissions' : '/pro/panel/clinic/appointments' }))
 
   return (
-    <div className="space-y-6">
+      <div className="space-y-8">
       <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted)]">Bugungi umumiy koʻrinish</p>
-        <h1 className="mt-1 text-2xl font-semibold">{roleTitles[role]}</h1>
+        <h1 className="text-xl font-semibold">{roleTitles[role]}</h1>
       </div>
 
       <section aria-label="Asosiy koʻrsatkichlar" className="grid grid-cols-12 gap-3">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="kpi-stripe col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] p-4 sm:col-span-6 xl:col-span-4">
+          <div key={label} className="col-span-12 border-y border-[var(--border)] py-3 sm:col-span-6 xl:col-span-4">
             <div className="flex items-center justify-between gap-3">
               <span className="text-sm text-[var(--muted)]">{label}</span>
               <Icon size={18} strokeWidth={1.5} className="text-[var(--muted)]" />
             </div>
-            <div className="mt-2 text-3xl font-semibold">{value}</div>
+            <div className="mt-1 text-xl font-semibold tabular-nums">{value}</div>
           </div>
         ))}
       </section>
@@ -119,26 +118,26 @@ export function ProDashboardPage() {
 
         <section className="col-span-12 xl:col-span-5">
           <h2 className="mb-3 text-base font-semibold">Tezkor amallar</h2>
-          <div className="grid grid-cols-12 gap-2">
+          <div className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
             {roleLinks[role].map((link) => (
-              <Link key={link.to} to={link.to} className="col-span-12 flex min-h-12 items-center justify-between gap-3 rounded-[var(--radius-card)] border border-[var(--border)] px-4 py-3 text-sm hover:bg-[var(--surface)] sm:col-span-6 xl:col-span-12">
+              <Link key={link.to} to={link.to} className="flex min-h-11 items-center justify-between gap-3 py-2.5 text-sm hover:bg-[var(--surface)]">
                 {link.label}<ArrowRight size={16} strokeWidth={1.5} />
               </Link>
             ))}
           </div>
           {role === 'pharmacy' && lowStock.length > 0 && (
-            <p className="mt-3 rounded-[var(--radius-card)] border border-[var(--status-warn)]/40 px-3 py-2 text-xs text-[var(--muted)]">
-              Omborda {lowStock.length} ta mahsulot kam qolgan. Qoldiqni tekshiring.
+            <p className="mt-3 text-xs text-[var(--muted)]">
+              Omborda {lowStock.length} ta mahsulot kam qolgan.
             </p>
           )}
           {role === 'clinic' && (
-            <p className="mt-3 text-xs text-[var(--muted)]">Hamkorlar, jamoa va qabul holatlari demo maʼlumotlar asosida yangilanadi.</p>
+            <p className="mt-3 text-xs text-[var(--muted)]">Hamkorlar va qabullar</p>
           )}
           {role === 'hospital' && (
-            <p className="mt-3 text-xs text-[var(--muted)]">Yotoq holatlari demo maket. Shoshilinch yordam uchun 103 ga murojaat qiling.</p>
+            <p className="mt-3 text-xs text-[var(--muted)]">Yotoq holatlari</p>
           )}
           {role === 'doctor' && (
-            <p className="mt-3 text-xs text-[var(--muted)]">Bemor yozuvlari maxfiy. Bu prototipdagi maʼlumotlar namuna hisoblanadi.</p>
+            <p className="mt-3 text-xs text-[var(--muted)]">Bemor qabullari</p>
           )}
         </section>
       </div>

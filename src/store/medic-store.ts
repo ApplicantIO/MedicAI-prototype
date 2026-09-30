@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { APP_CONFIG } from '@/config'
 import { appointmentsSeed } from '@/data/appointments'
 import { ordersSeed } from '@/data/orders'
+import { couriersSeed } from '@/data/couriers'
 import { pharmaciesSeed } from '@/data/pharmacies'
 import { drugsSeed } from '@/data/drugs'
 import { doctorsSeed } from '@/data/doctors'
@@ -24,6 +25,7 @@ import type {
   ThemeMode,
 } from '@/types'
 import type { AIScenario } from '@/data/ai-scenarios'
+import { uz } from '@/content/uz'
 
 export interface AIChatState {
   scenarioId: string | null
@@ -74,6 +76,10 @@ export interface MedicState {
   placeOrder: (order: Omit<Order, 'id' | 'createdAt' | 'chat' | 'status'>) => string
   advanceOrder: (id: string) => void
   setOrderStatus: (id: string, status: OrderStatus) => void
+  assignCourier: (orderId: string, courierId: string) => void
+  markDelivered: (orderId: string) => void
+  markFailed: (orderId: string, reason: string) => void
+  retryOrder: (orderId: string) => void
   addOrderMessage: (id: string, text: string, from: 'user' | 'provider') => void
   addAppointment: (a: Omit<Appointment, 'id' | 'code' | 'status'>) => string
   setAppointmentStatus: (id: string, status: AppointmentStatus) => void
@@ -133,7 +139,63 @@ function cloneSeed<T>(data: T): T {
   return JSON.parse(JSON.stringify(data)) as T
 }
 
-const ORDER_FLOW: OrderStatus[] = ['accepted', 'preparing', 'ready', 'delivered']
+const DELIVERY_FLOW: OrderStatus[] = ['accepted', 'preparing', 'ready', 'out_for_delivery', 'delivered']
+const PICKUP_FLOW: OrderStatus[] = ['accepted', 'preparing', 'ready', 'delivered']
+const ORDER_EVENT_TEXT: Record<OrderStatus, string> = {
+  accepted: uz.order.events.accepted,
+  preparing: uz.order.events.preparing,
+  ready: uz.order.events.ready,
+  out_for_delivery: uz.order.events.outForDelivery,
+  delivered: uz.order.events.delivered,
+  failed: uz.order.events.failed,
+  cancelled: uz.order.events.cancelled,
+}
+
+function normalizeOrder(order: Order, seed?: Order): Order {
+  const inDelivery = order.deliveryMode === 'delivery'
+  const flow = inDelivery ? DELIVERY_FLOW : PICKUP_FLOW
+  let history: OrderStatus[]
+  if (order.status === 'failed' && inDelivery) history = [...DELIVERY_FLOW.slice(0, -1), 'failed']
+  else if (order.status === 'cancelled') history = ['accepted', 'cancelled']
+  else {
+    const statusIndex = flow.indexOf(order.status)
+    history = statusIndex < 0 ? ['accepted'] : flow.slice(0, statusIndex + 1)
+  }
+  const events = order.events?.length
+    ? order.events
+    : history.map((status, index) => ({
+        id: `oe-${order.id}-legacy-${status}`,
+        at: new Date(Date.parse(order.createdAt) + index * 60_000).toISOString(),
+        status,
+        text: ORDER_EVENT_TEXT[status],
+      }))
+  const isInTransit = order.status === 'out_for_delivery' || order.status === 'delivered' || order.status === 'failed'
+
+  return {
+    ...seed,
+    ...order,
+    priority: order.priority ?? seed?.priority ?? 'standard',
+    address: order.address ?? seed?.address,
+    pickupCode: order.pickupCode ?? (order.deliveryMode === 'pickup' && order.status === 'ready' ? seed?.pickupCode : undefined),
+    courierId: order.courierId ?? (isInTransit ? seed?.courierId ?? null : null),
+    etaMinutes: order.etaMinutes ?? (order.status === 'out_for_delivery' ? seed?.etaMinutes ?? 30 : null),
+    events,
+    deliveredAt: order.deliveredAt ?? (order.status === 'delivered' ? seed?.deliveredAt ?? order.createdAt : null),
+    failReason: order.failReason ?? (order.status === 'failed' ? seed?.failReason ?? uz.order.failureReasons.noAnswer : null),
+  }
+}
+
+function withOrderEvent(order: Order, status: OrderStatus, text: string, patch: Partial<Order> = {}): Order {
+  const at = new Date().toISOString()
+  const eventId = `oe-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+  return {
+    ...order,
+    ...patch,
+    status,
+    events: [...(order.events ?? []), { id: eventId, at, status, text }],
+    chat: [...order.chat, { id: `cm-${eventId}`, from: 'system', text, at }],
+  }
+}
 
 export const useMedicStore = create<MedicState>()(
   persist(
@@ -226,12 +288,24 @@ export const useMedicStore = create<MedicState>()(
 
       placeOrder: (order) => {
         const id = `o${Date.now()}`
+        const at = new Date().toISOString()
+        const pickupCode = order.deliveryMode === 'pickup'
+          ? String(Math.floor(1000 + Math.random() * 9000))
+          : undefined
+        const acceptedEvent = { id: `oe-${id}-accepted`, at, status: 'accepted' as const, text: uz.order.events.accepted }
         const newOrder: Order = {
           ...order,
           id,
           status: 'accepted',
-          createdAt: new Date().toISOString(),
-          chat: [{ id: `cm${Date.now()}`, from: 'provider', text: 'Buyurtmangiz qabul qilindi.', at: new Date().toISOString() }],
+          createdAt: at,
+          priority: order.priority ?? 'standard',
+          pickupCode: order.deliveryMode === 'pickup' ? pickupCode : undefined,
+          courierId: order.courierId ?? null,
+          etaMinutes: order.etaMinutes ?? null,
+          deliveredAt: null,
+          failReason: null,
+          events: [acceptedEvent],
+          chat: [{ id: `cm-${id}-accepted`, from: 'system', text: acceptedEvent.text, at }],
         }
         set((s) => ({ orders: [newOrder, ...s.orders], cart: [] }))
         return id
@@ -240,14 +314,72 @@ export const useMedicStore = create<MedicState>()(
       advanceOrder: (id) => {
         const order = get().orders.find((o) => o.id === id)
         if (!order) return
-        const idx = ORDER_FLOW.indexOf(order.status)
-        if (idx < 0 || idx >= ORDER_FLOW.length - 1) return
-        get().setOrderStatus(id, ORDER_FLOW[idx + 1]!)
+        const flow = order.deliveryMode === 'delivery' ? DELIVERY_FLOW : PICKUP_FLOW
+        const idx = flow.indexOf(order.status)
+        if (idx < 0 || idx >= flow.length - 1) return
+        const nextStatus = flow[idx + 1]!
+        if (nextStatus === 'out_for_delivery' && order.deliveryMode === 'delivery') {
+          get().assignCourier(id, order.courierId ?? couriersSeed[0]!.id)
+          return
+        }
+        get().setOrderStatus(id, nextStatus)
       },
 
       setOrderStatus: (id, status) =>
         set((s) => ({
-          orders: s.orders.map((o) => (o.id === id ? { ...o, status } : o)),
+          orders: s.orders.map((order) => {
+            if (order.id !== id) return order
+            const text = ORDER_EVENT_TEXT[status] ?? uz.order.systemMessage
+            return withOrderEvent(order, status, text, status === 'delivered' ? { deliveredAt: new Date().toISOString() } : {})
+          }),
+        })),
+
+      assignCourier: (orderId, courierId) =>
+        set((s) => ({
+          orders: s.orders.map((order) => {
+            if (order.id !== orderId || order.deliveryMode !== 'delivery' || order.status !== 'ready') return order
+            const etaMinutes = Math.floor(15 + Math.random() * 31)
+            return withOrderEvent(order, 'out_for_delivery', uz.order.events.courierAssigned, {
+              courierId,
+              etaMinutes,
+              failReason: null,
+            })
+          }),
+        })),
+
+      markDelivered: (orderId) =>
+        set((s) => ({
+          orders: s.orders.map((order) => {
+            const canDeliver = order.deliveryMode === 'pickup'
+              ? order.status === 'ready'
+              : order.status === 'out_for_delivery'
+            if (order.id !== orderId || !canDeliver) return order
+            const at = new Date().toISOString()
+            return withOrderEvent(order, 'delivered', uz.order.podNote, { deliveredAt: at, etaMinutes: null })
+          }),
+        })),
+
+      markFailed: (orderId, reason) =>
+        set((s) => ({
+          orders: s.orders.map((order) => {
+            if (order.id !== orderId || order.status !== 'out_for_delivery') return order
+            const failReason = reason.trim() || uz.order.events.failed
+            return withOrderEvent(order, 'failed', `${uz.order.events.failed}: ${failReason}`, {
+              failReason,
+              etaMinutes: null,
+            })
+          }),
+        })),
+
+      retryOrder: (orderId) =>
+        set((s) => ({
+          orders: s.orders.map((order) => {
+            if (order.id !== orderId || order.status !== 'failed' || order.deliveryMode !== 'delivery') return order
+            return withOrderEvent(order, 'out_for_delivery', uz.order.events.retry, {
+              etaMinutes: 30,
+              failReason: null,
+            })
+          }),
         })),
 
       addOrderMessage: (id, text, from) =>
@@ -368,9 +500,16 @@ export const useMedicStore = create<MedicState>()(
         const persisted = persistedState as Partial<MedicState>
         const appointments = persisted.appointments ?? currentState.appointments
         const savedIds = new Set(appointments.map((appointment) => appointment.id))
+        const persistedOrders = persisted.orders ?? currentState.orders
+        const savedOrderIds = new Set(persistedOrders.map((order) => order.id))
+        const seedOrders = new Map(currentState.orders.map((order) => [order.id, order]))
         return {
           ...currentState,
           ...persisted,
+          orders: [
+            ...persistedOrders.map((order) => normalizeOrder(order, seedOrders.get(order.id))),
+            ...currentState.orders.filter((order) => !savedOrderIds.has(order.id)),
+          ],
           appointments: [...appointments, ...currentState.appointments.filter((appointment) => !savedIds.has(appointment.id))],
         }
       },

@@ -31,7 +31,7 @@ export function AIChatPage() {
       pushAIMessage({
         id: `m${Date.now()}`,
         role: 'ai',
-        text: 'Salom! Asosiy shikoyatingiz nima? Chip tanlang yoki yozing.',
+        text: uz.ai.greeting,
       })
     }
   }, [aiChat.messages.length, aiChat.scenarioId, pushAIMessage])
@@ -99,7 +99,7 @@ export function AIChatPage() {
             pushAIMessage({
               id: `m${Date.now()}`,
               role: 'ai',
-              text: 'Salom! Asosiy shikoyatingiz nima? Chip tanlang yoki yozing.',
+              text: uz.ai.greeting,
             })
           }}
         >
@@ -135,7 +135,7 @@ export function AIChatPage() {
       </div>
 
       <div className="border-t border-[var(--border)] px-4 py-3">
-        <MedicalDisclaimer className="mb-2" />
+        <MedicalDisclaimer compact className="mb-2" />
 
         {!scenario && (
           <div className="mb-2 flex flex-wrap gap-1.5">
@@ -145,7 +145,7 @@ export function AIChatPage() {
                 type="button"
                 disabled={typing}
                 onClick={() => void advance(c, c)}
-                className="rounded-full border border-[var(--border)] px-3 py-1 text-xs hover:border-[var(--accent)]"
+                className="min-h-11 rounded-[var(--radius-input)] border border-[var(--border)] px-3 text-xs hover:bg-[var(--surface)]"
               >
                 {c}
               </button>
@@ -161,7 +161,7 @@ export function AIChatPage() {
                 type="button"
                 disabled={typing}
                 onClick={() => void advance(c)}
-                className="rounded-full border border-[var(--border)] px-3 py-1 text-xs hover:border-[var(--accent)]"
+                className="min-h-11 rounded-[var(--radius-input)] border border-[var(--border)] px-3 text-xs hover:bg-[var(--surface)]"
               >
                 {c}
               </button>
@@ -185,8 +185,8 @@ export function AIChatPage() {
                           : [...aiChat.multiselect, o],
                       })
                     }
-                    className={`rounded-full border px-3 py-1 text-xs ${
-                      on ? 'border-[var(--accent)] bg-[var(--accent)]/10' : 'border-[var(--border)]'
+                    className={`min-h-11 rounded-[var(--radius-input)] border px-3 text-xs ${
+                      on ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'
                     }`}
                   >
                     {o}

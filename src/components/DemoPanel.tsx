@@ -45,16 +45,14 @@ export function DemoPanel() {
       }`}
     >
       {open && (
-        <div className="w-72 rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-3 shadow-[var(--shadow-elevated)] animate-fade-in">
+        <div className="w-[min(18rem,calc(100vw-24px))] rounded-[var(--radius-card)] border border-[var(--border)] bg-[var(--bg)] p-3 shadow-[var(--shadow-elevated)] animate-fade-in">
           <div className="mb-2 flex items-center justify-between">
             <span className="text-sm font-semibold">{uz.demoPanel.title}</span>
             <button type="button" onClick={() => setOpen(false)} className="text-[var(--muted)]">
               <ChevronUp size={16} />
             </button>
           </div>
-          <p className="mb-3 text-[11px] text-[var(--muted)]">Prototype · demo maʼlumotlar</p>
-
-          <div className="mb-3 flex items-center justify-between gap-2">
+          <div className="mb-3 flex items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
             <span className="text-xs">{uz.demoPanel.accelerator}</span>
             <Switch checked={accelerator} onCheckedChange={setDemoAccelerator} />
           </div>
@@ -94,7 +92,7 @@ export function DemoPanel() {
                   key={s.id}
                   type="button"
                   onClick={() => jumpScenario(s.id)}
-                  className="rounded-full border border-[var(--border)] px-2 py-0.5 text-[11px] hover:border-[var(--accent)]"
+                  className="min-h-8 rounded-[var(--radius-input)] border border-[var(--border)] px-2 text-[11px] hover:bg-[var(--surface)]"
                 >
                   {s.chipLabel}
                 </button>
@@ -118,8 +116,8 @@ export function DemoPanel() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg)] text-[var(--muted)] shadow-[var(--shadow-elevated)] hover:text-[var(--fg)]"
-        aria-label="Demo panel"
+        className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-input)] border border-[var(--border)] bg-[var(--bg)] text-[var(--muted)] hover:text-[var(--fg)]"
+        aria-label={uz.demoPanel.title}
       >
         <Settings2 size={18} strokeWidth={1.5} />
       </button>

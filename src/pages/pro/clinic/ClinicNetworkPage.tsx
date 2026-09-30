@@ -12,19 +12,18 @@ export function ClinicNetworkPage() {
   const totalDemand = regionsSeed.reduce((sum, region) => sum + region.visits, 0)
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <header>
-        <p className="text-xs text-[var(--muted)]">Hududiy ehtiyoj va hamkorlik</p>
-        <h1 className="mt-1 text-2xl font-semibold">Tarmoq</h1>
+        <h1 className="text-xl font-semibold">Tarmoq</h1>
       </header>
-      <div className="grid grid-cols-12 gap-3">
-        <div className="kpi-stripe col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] p-4 sm:col-span-6">
+      <div className="grid grid-cols-12 gap-3 border-y border-[var(--border)]">
+        <div className="col-span-12 py-3 sm:col-span-6">
           <div className="text-xs text-[var(--muted)]">AI murojaatlari (demo)</div>
-          <div className="mt-1 text-2xl font-semibold">{totalDemand}</div>
+          <div className="mt-1 text-xl font-semibold tabular-nums">{totalDemand}</div>
         </div>
-        <div className="kpi-stripe col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] p-4 sm:col-span-6">
+        <div className="col-span-12 border-t border-[var(--border)] py-3 sm:col-span-6 sm:border-t-0">
           <div className="text-xs text-[var(--muted)]">Faol dorixona hamkorlari</div>
-          <div className="mt-1 text-2xl font-semibold">{Object.values(partners).filter(Boolean).length}</div>
+          <div className="mt-1 text-xl font-semibold tabular-nums">{Object.values(partners).filter(Boolean).length}</div>
         </div>
       </div>
       <div className="flex gap-2 border-b border-[var(--border)]">
@@ -34,7 +33,7 @@ export function ClinicNetworkPage() {
       {tab === 'demand' ? (
         <section className="space-y-3">
           {regionsSeed.map((region) => (
-            <article key={region.id} className="rounded-[var(--radius-card)] border border-[var(--border)] p-4">
+            <article key={region.id} className="border-b border-[var(--border)] py-3 first:border-t">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3"><MapPinned size={18} strokeWidth={1.5} className="mt-0.5 text-[var(--muted)]" /><div><h2 className="text-sm font-semibold">{region.name}</h2><p className="mt-1 text-xs text-[var(--muted)]">Eng koʻp soʻralgan: {region.topSpecialty}</p></div></div>
                 <span className="shrink-0 text-sm font-semibold">{region.visits} ta</span>
@@ -42,14 +41,13 @@ export function ClinicNetworkPage() {
               <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--surface)]"><div className="h-full rounded-full bg-[var(--fg)]" style={{ width: `${(region.visits / 34) * 100}%` }} /></div>
             </article>
           ))}
-          <p className="text-xs text-[var(--muted)]">Bu koʻrsatkichlar anonim demo statistikasi, real bemor maʼlumoti emas.</p>
         </section>
       ) : (
         <section className="grid grid-cols-12 gap-3">
           {pharmaciesSeed.map((pharmacy) => {
             const partner = !!partners[pharmacy.id]
             return (
-              <article key={pharmacy.id} className="col-span-12 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-4 sm:col-span-6">
+              <article key={pharmacy.id} className="col-span-12 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] py-3 sm:col-span-6">
                 <div className="flex min-w-0 items-start gap-3"><Handshake size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-[var(--muted)]" /><div className="min-w-0"><h2 className="truncate text-sm font-semibold">{pharmacy.name}</h2><p className="mt-1 truncate text-xs text-[var(--muted)]">{pharmacy.address} · {pharmacy.distanceKm} km</p></div></div>
                 <Button size="sm" variant={partner ? 'outline' : 'default'} onClick={() => setPartner(pharmacy.id, !partner)}>{partner ? 'Hamkorlik bekor qilish' : 'Soʻrov yuborish'}</Button>
               </article>

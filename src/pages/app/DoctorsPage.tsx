@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import { uz } from '@/content/uz'
 import { doctorsSeed } from '@/data/doctors'
-import { initials, avatarColor } from '@/lib/avatar'
+import { initials } from '@/lib/avatar'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
 import { useMedicStore } from '@/store/medic-store'
@@ -32,22 +32,22 @@ export function DoctorsPage() {
 
   return (
     <div className="px-4 pb-6 pt-4">
-      <h1 className="mb-3 text-xl font-semibold">{uz.doctors.title}</h1>
-      <Input placeholder={uz.doctors.search} value={q} onChange={(e) => setQ(e.target.value)} className="mb-3" />
-      <div className="scrollbar-hidden mb-3 flex gap-2 overflow-x-auto pb-1">
+      <h1 className="mb-5 text-xl font-semibold">{uz.doctors.title}</h1>
+      <Input placeholder={uz.doctors.search} value={q} onChange={(e) => setQ(e.target.value)} className="mb-4" />
+      <div className="scrollbar-hidden mb-4 flex gap-2 overflow-x-auto pb-1">
         <button
           type="button"
           onClick={() => setSpec(null)}
-          className={`min-h-11 shrink-0 rounded-full border px-3 text-xs ${!spec ? 'border-[var(--fg)]' : 'border-[var(--border)]'}`}
+          className={`min-h-11 shrink-0 rounded-[var(--radius-input)] border px-3 text-xs ${!spec ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'}`}
         >
-          Hammasi
+          {uz.doctors.all}
         </button>
         {specialties.map((s) => (
           <button
             key={s}
             type="button"
             onClick={() => setSpec(s)}
-            className={`min-h-11 shrink-0 rounded-full border px-3 text-xs ${spec === s ? 'border-[var(--fg)]' : 'border-[var(--border)]'}`}
+            className={`min-h-11 shrink-0 rounded-[var(--radius-input)] border px-3 text-xs ${spec === s ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'}`}
           >
             {s}
           </button>
@@ -64,7 +64,7 @@ export function DoctorsPage() {
               key={k}
               type="button"
               onClick={() => setSort(k)}
-              className={`min-h-11 whitespace-nowrap rounded-full px-2.5 text-xs ${sort === k ? 'bg-[var(--surface)] font-medium' : 'text-[var(--muted)]'}`}
+              className={`min-h-11 whitespace-nowrap rounded-[var(--radius-input)] px-2.5 text-xs ${sort === k ? 'border border-[var(--border)] bg-[var(--surface)] text-[var(--fg)]' : 'text-[var(--muted)]'}`}
             >
               {label}
             </button>
@@ -75,38 +75,29 @@ export function DoctorsPage() {
           <Switch checked={onlineOnly} onCheckedChange={setOnlineOnly} />
         </label>
       </div>
-      <div className="space-y-2">
+      <div className="divide-y divide-[var(--border)]">
         {list.length === 0 && (
-          <p className="rounded-[var(--radius-card)] border border-[var(--border)] px-4 py-6 text-center text-sm text-[var(--muted)]">
-            {uz.doctors.empty}
-          </p>
+          <p className="py-4 text-sm text-[var(--muted)]">{uz.doctors.noResults}</p>
         )}
         {list.map((d) => (
           <Link
             key={d.id}
             to={`/app/doctors/${d.id}`}
-            className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-3"
+            className="flex min-h-16 items-center gap-3 py-3"
           >
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-              style={{ background: avatarColor(d.id) }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--surface)] text-xs font-medium text-[var(--muted)]"
             >
               {initials(d.name)}
             </div>
             <div className="min-w-0 flex-1">
               <div className="truncate text-sm font-medium">{d.name}</div>
-              <div className="text-xs text-[var(--muted)]">
-                {d.specialty} · {d.experienceYears} {uz.doctors.experience}
-              </div>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-1 text-xs text-[var(--muted)]">
-                <span className="inline-flex items-center gap-1">
-                  <Star size={12} strokeWidth={1.5} className="fill-current" /> {d.rating}
-                </span>
-                <span>· {d.distanceKm} km · {d.priceOffline.toLocaleString('uz-UZ')} {uz.doctors.from}</span>
+              <div className="truncate text-xs text-[var(--muted)]">
+                {d.specialty} · {d.experienceYears} {uz.doctors.experience} · <Star size={11} className="inline" /> {d.rating} · {d.distanceKm} km
               </div>
             </div>
             {(availability[d.id] ?? d.onlineNow) && (
-              <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--status-ok)]" title="Qabul mavjud" />
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[var(--status-ok)]" title={uz.doctors.available} />
             )}
           </Link>
         ))}

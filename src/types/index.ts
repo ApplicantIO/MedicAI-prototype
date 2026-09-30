@@ -1,11 +1,12 @@
 export type ThemeMode = 'light' | 'dark' | 'system'
 export type ProRole = 'pharmacy' | 'clinic' | 'hospital' | 'doctor'
-export type OrderStatus = 'accepted' | 'preparing' | 'ready' | 'delivered'
+export type OrderStatus = 'accepted' | 'preparing' | 'ready' | 'out_for_delivery' | 'delivered' | 'failed' | 'cancelled'
 export type AppointmentStatus = 'pending' | 'confirmed' | 'rejected' | 'completed' | 'cancelled'
 export type UrgencyLevel = 'low' | 'medium' | 'high'
 export type ConsultType = 'offline' | 'online'
 export type DeliveryMode = 'pickup' | 'delivery'
 export type PaymentMethod = 'card' | 'cash'
+export type OrderPriority = 'standard' | 'express'
 
 export interface Doctor {
   id: string
@@ -90,6 +91,28 @@ export interface Order {
   paymentMethod: PaymentMethod
   createdAt: string
   chat: ChatMessage[]
+  priority?: OrderPriority
+  address?: string
+  pickupCode?: string
+  courierId?: string | null
+  etaMinutes?: number | null
+  events?: OrderEvent[]
+  deliveredAt?: string | null
+  failReason?: string | null
+}
+
+export interface OrderEvent {
+  id: string
+  at: string
+  status: OrderStatus | string
+  text: string
+}
+
+export interface Courier {
+  id: string
+  name: string
+  phone: string
+  vehicle: string
 }
 
 export interface Appointment {

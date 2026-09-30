@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button'
 const navByRole = {
   pharmacy: [
     { to: '/pro/panel/pharmacy', label: 'Bosh sahifa', icon: LayoutDashboard },
-    { to: '/pro/panel/pharmacy/orders', label: 'Buyurtmalar', icon: ClipboardList },
+    { to: '/pro/panel/pharmacy/orders', label: uz.order.logistics, icon: ClipboardList },
     { to: '/pro/panel/pharmacy/inventory', label: 'Ombor', icon: Package },
     { to: '/pro/panel/pharmacy/reports', label: 'Hisobotlar', icon: LayoutDashboard },
     { to: '/pro/panel/pharmacy/ads', label: 'Reklama', icon: Megaphone },
@@ -151,7 +151,7 @@ export function ProShell() {
           </select>
           <span className="hidden text-xs text-[var(--muted)] sm:inline">{uz.pro.desktopHint}</span>
         </header>
-        <main className="mx-auto w-full max-w-[1280px] flex-1 overflow-auto p-4 md:p-6">
+        <main className="mx-auto w-full max-w-[1280px] flex-1 overflow-auto p-4 md:p-6 [&_h1]:text-xl">
           <Outlet />
         </main>
       </div>

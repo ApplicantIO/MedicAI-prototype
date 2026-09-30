@@ -25,7 +25,7 @@ export function CardContent({ className, ...props }: HTMLAttributes<HTMLDivEleme
 export function KpiCard({ className, accentTop, ...props }: HTMLAttributes<HTMLDivElement> & { accentTop?: boolean }) {
   return (
     <Card
-      className={cn(accentTop && 'border-t-2 border-t-[var(--accent)]', className)}
+      className={cn(accentTop && 'border-t-2 border-t-[var(--border)]', className)}
       {...props}
     />
   )

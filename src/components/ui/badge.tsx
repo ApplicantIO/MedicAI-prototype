@@ -3,15 +3,15 @@ import type { HTMLAttributes } from 'react'
 import { cn } from '@/lib/cn'
 
 const badgeVariants = cva(
-  'inline-flex items-center rounded-[var(--radius-chip)] px-2.5 py-0.5 text-xs font-medium border',
+  'inline-flex items-center rounded-[var(--radius-chip)] border px-2 py-0.5 text-[11px] font-medium leading-4',
   {
     variants: {
       variant: {
-        default: 'border-[var(--border)] text-[var(--fg)] bg-[var(--surface)]',
-        promoted: 'border-[var(--accent)] text-[var(--accent)] bg-[var(--accent)]/10',
-        ok: 'border-[var(--status-ok)] text-[var(--status-ok)] bg-[var(--status-ok)]/10',
-        warn: 'border-[var(--status-warn)] text-[var(--status-warn)] bg-[var(--status-warn)]/10',
-        danger: 'border-[var(--status-danger)] text-[var(--status-danger)] bg-[var(--status-danger)]/10',
+        default: 'border-[var(--border)] bg-transparent text-[var(--muted)]',
+        promoted: 'border-[var(--border)] bg-transparent text-[var(--fg)]',
+        ok: 'border-[var(--border)] bg-transparent text-[var(--status-ok)]',
+        warn: 'border-[var(--border)] bg-transparent text-[var(--status-warn)]',
+        danger: 'border-[var(--border)] bg-transparent text-[var(--status-danger)]',
       },
     },
     defaultVariants: { variant: 'default' },

@@ -58,18 +58,19 @@ export function PharmacySearchPage() {
         <Link to="/app/cart" className="relative text-[var(--fg)]">
           <ShoppingCart size={22} strokeWidth={1.5} />
           {cart.length > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--accent)] text-[10px] text-white">
+            <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--bg)] px-1 text-[10px] text-[var(--fg)]">
               {cart.reduce((s, c) => s + c.quantity, 0)}
             </span>
           )}
         </Link>
       </div>
       <Input placeholder={uz.pharmacy.search} value={q} onChange={(e) => setQ(e.target.value)} className="mb-4" />
-      <div className="space-y-2">
+      <div className="divide-y divide-[var(--border)]">
+        {results.length === 0 && <p className="py-4 text-sm text-[var(--muted)]">{uz.pharmacy.empty}</p>}
         {results.map((r) => (
           <div
             key={`${r.drugId}-${r.pharmacyId}`}
-            className="flex items-center gap-3 rounded-[var(--radius-card)] border border-[var(--border)] p-3"
+            className="flex items-center gap-3 py-3"
           >
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
@@ -79,11 +80,8 @@ export function PharmacySearchPage() {
               <div className="text-xs text-[var(--muted)]">
                 {r.pharmacyName} · {r.distance} {uz.pharmacy.distance}
               </div>
-              <div className="mt-0.5 text-sm font-semibold">
-                {r.price.toLocaleString('uz-UZ')} soʻm ·{' '}
-                <span className={r.inStock ? 'text-[var(--status-ok)]' : 'text-[var(--status-danger)]'}>
-                  {r.inStock ? uz.pharmacy.inStock : uz.pharmacy.outOfStock}
-                </span>
+              <div className="truncate text-xs text-[var(--muted)]">
+                {r.price.toLocaleString('uz-UZ')} {uz.order.currency} · {r.inStock ? uz.pharmacy.inStock : uz.pharmacy.outOfStock}
               </div>
             </div>
             <Button

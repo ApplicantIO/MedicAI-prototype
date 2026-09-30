@@ -11,45 +11,32 @@ export function ClinicsPage() {
 
   return (
     <div className="px-4 pb-6 pt-4">
-      <h1 className="mb-3 text-xl font-semibold">{uz.clinics.title}</h1>
+      <h1 className="mb-5 text-xl font-semibold">{uz.clinics.title}</h1>
       <div className="mb-4 flex gap-2">
         {(['all', 'clinic', 'hospital'] as const).map((f) => (
           <button
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={`min-h-11 rounded-full border px-3 text-xs ${
-              filter === f ? 'border-[var(--fg)]' : 'border-[var(--border)]'
+            className={`min-h-11 rounded-[var(--radius-input)] border px-3 text-xs ${
+              filter === f ? 'border-[var(--fg)] bg-[var(--surface)]' : 'border-[var(--border)]'
             }`}
           >
-            {f === 'all' ? 'Hammasi' : f === 'clinic' ? uz.clinics.filterClinic : uz.clinics.filterHospital}
+            {f === 'all' ? uz.clinics.all : f === 'clinic' ? uz.clinics.filterClinic : uz.clinics.filterHospital}
           </button>
         ))}
       </div>
-      <div className="space-y-3">
+      <div className="divide-y divide-[var(--border)]">
         {list.map((c) => (
-          <div key={c.id} className="rounded-[var(--radius-card)] border border-[var(--border)] p-4">
-            <div className="font-medium">{c.name}</div>
-            <div className="mt-1 text-xs text-[var(--muted)]">
-              {c.type === 'clinic' ? uz.clinics.filterClinic : uz.clinics.filterHospital} ·{' '}
-              <span className="inline-flex items-center gap-1">
-                <Star size={12} strokeWidth={1.5} className="fill-current" /> {c.rating}
-              </span>{' '}
-              · {c.distanceKm} km
+          <div key={c.id} className="flex items-center gap-3 py-3">
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium">{c.name}</div>
+              <div className="truncate text-xs text-[var(--muted)]">
+                {c.type === 'clinic' ? uz.clinics.filterClinic : uz.clinics.filterHospital} · {c.address} · {c.distanceKm} km
+              </div>
             </div>
-            <p className="mt-2 text-sm text-[var(--muted)]">{c.address}</p>
-            <div className="mt-2 flex flex-wrap gap-1">
-              {c.services.slice(0, 4).map((s) => (
-                <span key={s} className="rounded-full bg-[var(--surface)] px-2 py-0.5 text-[11px]">
-                  {s}
-                </span>
-              ))}
-            </div>
-            {c.doctorIds[0] && (
-              <Button className="mt-3 min-h-11 w-full" asChild>
-                <Link to={`/app/book/${c.doctorIds[0]}`}>{uz.clinics.book}</Link>
-              </Button>
-            )}
+            <span className="inline-flex shrink-0 items-center gap-1 text-xs text-[var(--muted)]"><Star size={12} />{c.rating}</span>
+            {c.doctorIds[0] && <Button size="sm" variant="outline" asChild><Link to={`/app/book/${c.doctorIds[0]}`}>{uz.clinics.book}</Link></Button>}
           </div>
         ))}
       </div>

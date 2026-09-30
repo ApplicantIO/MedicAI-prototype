@@ -11,7 +11,7 @@ const buttonVariants = cva(
         default: 'bg-[var(--primary-btn-bg)] text-[var(--primary-btn-fg)] hover:opacity-90',
         outline: 'border border-[var(--border)] bg-transparent text-[var(--fg)] hover:bg-[var(--surface)]',
         ghost: 'text-[var(--fg)] hover:bg-[var(--surface)]',
-        accent: 'bg-[var(--accent)] text-white hover:opacity-90',
+        accent: 'border border-[var(--border)] bg-transparent text-[var(--fg)] hover:bg-[var(--surface)]',
         link: 'text-[var(--accent)] underline-offset-4 hover:underline min-h-0 px-0',
       },
       size: {

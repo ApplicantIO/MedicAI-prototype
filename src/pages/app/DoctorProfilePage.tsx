@@ -4,7 +4,7 @@ import { doctorsSeed } from '@/data/doctors'
 import { clinicsSeed } from '@/data/clinics'
 import { reviewsSeed } from '@/data/reviews'
 import { uz } from '@/content/uz'
-import { initials, avatarColor } from '@/lib/avatar'
+import { initials } from '@/lib/avatar'
 import { Button } from '@/components/ui/button'
 import { getDaySlots } from '@/lib/slots'
 import { useMedicStore } from '@/store/medic-store'
@@ -24,10 +24,7 @@ export function DoctorProfilePage() {
   return (
     <div className="px-4 pb-8 pt-4">
       <div className="flex items-start gap-4">
-        <div
-          className="flex h-16 w-16 items-center justify-center rounded-full text-lg font-semibold"
-          style={{ background: avatarColor(doctor.id) }}
-        >
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--surface)] text-sm font-medium text-[var(--muted)]">
           {initials(doctor.name)}
         </div>
         <div className="flex-1">
@@ -40,7 +37,7 @@ export function DoctorProfilePage() {
           </p>
         </div>
       </div>
-      <p className="mt-4 text-sm text-[var(--muted)]">{doctor.bio}</p>
+      <p className="mt-3 line-clamp-2 text-sm text-[var(--muted)]">{doctor.bio}</p>
       {clinic && (
         <p className="mt-2 text-sm">
           <span className="text-[var(--muted)]">Klinika: </span>
@@ -82,9 +79,9 @@ export function DoctorProfilePage() {
       </div>
       <div className="mt-6">
         <h2 className="mb-2 text-sm font-semibold">Sharhlar</h2>
-        <div className="space-y-2">
+        <div className="divide-y divide-[var(--border)]">
           {reviews.map((r) => (
-            <div key={r.id} className="rounded-[var(--radius-card)] border border-[var(--border)] p-3 text-sm">
+            <div key={r.id} className="py-3 text-sm">
               <div className="font-medium">
                 {r.author} · <Star size={12} strokeWidth={1.5} className="inline fill-current" /> {r.rating}
               </div>

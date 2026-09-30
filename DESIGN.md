@@ -1,6 +1,6 @@
 # Medic AI — Design System
 
-Vercel-inspired clarity (Geist-like black/white) + Linear-style dense lists. Prototype deck alignment: minimal, one accent.
+Vercel-inspired clarity (black/white) + Linear-style dense lists. Prioritize one clear action, concise copy, and quiet surfaces.
 
 ## Tokens (source of truth: `src/styles/tokens.css`)
 
@@ -21,7 +21,7 @@ Vercel-inspired clarity (Geist-like black/white) + Linear-style dense lists. Pro
 - **Family:** Inter (`@fontsource/inter`, weights 400, 600, 700)
 - **Mobile scale:** 12, 14, 16, 20, 28, 40 px
 - **Web scale:** 12, 13, 14, 16, 20, 24, 32, 48 px
-- **Heading tracking:** -0.02em
+- **Heading tracking:** 0
 - **Body line-height:** 1.5
 
 ## Radius & spacing
@@ -32,9 +32,10 @@ Vercel-inspired clarity (Geist-like black/white) + Linear-style dense lists. Pro
 ## Components
 
 - **Primary button:** black on light / white on dark (not accent)
-- **Accent (#F26522):** AI indicator, active tab dot, links — max 1–2 per screen
-- **Cards:** no shadow, 1px border, 12px radius; KPI cards optional 2px top border
-- **Sheet/modal shadow:** `0 8px 30px rgba(0,0,0,.08)`
+- **Accent (#F26522):** AI indicator, active tab dot, one link — max 1–2 per screen
+- **Status colors:** small text, dots, and outline badges only
+- **Cards:** prefer divider lists; when needed use a 1px border and 12px radius, no shadow
+- **Sheet/modal shadow:** use the restrained `--shadow-elevated` token
 - **Motion:** 150–200ms ease-out; respect `prefers-reduced-motion`
 - **Icons:** lucide-react, stroke 1.5
 
@@ -42,6 +43,13 @@ Vercel-inspired clarity (Geist-like black/white) + Linear-style dense lists. Pro
 
 - **App:** 390×844 phone frame on desktop; tab bar 44px min touch targets
 - **Pro:** sidebar 240px, topbar 56px, content max 1280px
+
+## Anti-patterns
+
+- No gradients, glass effects, or decorative AI patterns
+- No repeated accent fills, colored CTA buttons, or several colored badges on one screen
+- No repeated bold weights, long helper copy, or multi-level card nesting
+- Prefer one-line metadata and divider-based lists over repetitive cards
 
 ## Content
 

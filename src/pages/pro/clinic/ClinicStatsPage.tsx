@@ -12,21 +12,21 @@ export function ClinicStatsPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-2xl font-semibold">Statistika</h1>
-      <div className="mb-6 grid grid-cols-12 gap-3">
+      <h1 className="mb-5 text-xl font-semibold">Statistika</h1>
+      <div className="mb-6 grid grid-cols-12 gap-3 border-y border-[var(--border)]">
         {[
           { label: 'Jami qabullar', value: appointments.length },
           { label: 'Tasdiqlangan', value: confirmed },
           { label: 'Kutilmoqda', value: pending },
         ].map((k) => (
-          <div key={k.label} className="kpi-stripe col-span-12 rounded-[var(--radius-card)] border border-[var(--border)] p-4 md:col-span-4">
+          <div key={k.label} className="col-span-12 py-3 md:col-span-4">
             <div className="text-xs text-[var(--muted)]">{k.label}</div>
-            <div className="mt-1 text-2xl font-semibold">{k.value}</div>
+            <div className="mt-1 text-xl font-semibold tabular-nums">{k.value}</div>
           </div>
         ))}
       </div>
       <h2 className="mb-3 text-sm font-semibold">Hududlar boʻyicha talab</h2>
-      <div className="scrollbar-thin overflow-x-auto rounded-[var(--radius-card)] border border-[var(--border)]">
+      <div className="scrollbar-thin overflow-x-auto border-y border-[var(--border)]">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-[var(--border)] bg-[var(--surface)] text-xs text-[var(--muted)]">
             <tr>

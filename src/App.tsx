@@ -18,6 +18,7 @@ import { ConsultPage } from '@/pages/app/ConsultPage'
 import { PharmacySearchPage } from '@/pages/app/PharmacySearchPage'
 import { CartPage } from '@/pages/app/CartPage'
 import { OrderTrackPage } from '@/pages/app/OrderTrackPage'
+import { OrdersListPage } from '@/pages/app/OrdersListPage'
 import { ClinicsPage } from '@/pages/app/ClinicsPage'
 import { MapPage } from '@/pages/app/MapPage'
 import { ProfilePage } from '@/pages/app/ProfilePage'
@@ -85,6 +86,7 @@ export default function App() {
           <Route path="consult/:id" element={<ConsultPage />} />
           <Route path="pharmacy" element={<PharmacySearchPage />} />
           <Route path="cart" element={<CartPage />} />
+          <Route path="orders" element={<OrdersListPage />} />
           <Route path="orders/:id" element={<OrderTrackPage />} />
           <Route path="clinics" element={<ClinicsPage />} />
           <Route path="map" element={<MapPage />} />
